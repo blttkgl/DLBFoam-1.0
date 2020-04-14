@@ -13,7 +13,7 @@ EXE_INC = \
     -I../src/thermophysicalModels/lnInclude
 
 
-LIB_LIBS = \
+EXE_LIBS = \
     -lcompressibleTransportModels \
     -L$(FOAM_USER_LIBBIN) \
     -lfluidThermophysicalModels \
@@ -23,7 +23,7 @@ LIB_LIBS = \
     -lfiniteVolume \
     -lmeshTools \
     -lchemistryModel \
-    -lc_pyjac
-    
+    -lc_pyjac \
+    -lchemistryModel_pex 
     
 
