@@ -343,6 +343,8 @@ void pyJacChemistryModel<ReactionThermo, ThermoType>::calculate() {
     notImplemented("pyJacChemistryModel::calculateRR() const");
 }
 
+
+
 template <class ReactionThermo, class ThermoType>
 DynamicList<chemistryProblem>
 pyJacChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<volScalarField>& Y_,
@@ -350,35 +352,39 @@ pyJacChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<volScalarF
 
     // TODO: Add refcell and Treact as conditions to get problems.
 
+
     DynamicList<chemistryProblem> chem_problems;
     const scalarField&            T = this->thermo().T();
     const scalarField&            p = this->thermo().p();
     tmp<volScalarField>           trho(this->thermo().rho());
     const scalarField&            rho = trho();
     bool refCellFound = false;
-    chemistrySolution ref_soln;
+    chemistrySolution ref_soln(this->nSpecie_);
 
-    forAll(p, celli) {   
+    forAll(p, celli) {
+
+        for (label i = 0; i < nSpecie_; i++) { c_[i] = Y_[i][celli]; }
+        // Create the problem
+        chemistryProblem problem;
+        problem.pi         = p[celli];
+        problem.Ti         = T[celli];
+        problem.c          = c_;
+        problem.rhoi       = rho[celli];
+        problem.deltaTChem = this->deltaTChem_[celli];
+        problem.cellid     = celli;
+        problem.deltaT     = deltaT;
+
+
         if (refcell_mapper_->active())
         {
-            for (label i = 0; i < nSpecie_; i++) { c_[i] = Y_[i][celli]; }
-
-            // Create the problem
-            chemistryProblem problem;
-            problem.pi         = p[celli];
-            problem.Ti         = T[celli];
-            problem.c          = c_;
-            problem.rhoi       = rho[celli];
-            problem.deltaTChem = this->deltaTChem_[celli];
-            problem.cellid     = celli;
-            problem.deltaT     = deltaT;
+            
          
             if(refcell_mapper_-> shouldMap(problem))
             {  
                  // TODO: Also update deltaTmin from reference solution
                 if(!refCellFound)
                 {
-                    ref_soln = solve_single(problem);
+                    solve_single(problem, ref_soln);
                     update_reaction_rate(ref_soln,ref_soln.cellid);
                     refCellFound = true;
                 }
@@ -394,17 +400,7 @@ pyJacChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<volScalarF
         }
         else
         {
-                for (label i = 0; i < nSpecie_; i++) { c_[i] = Y_[i][celli]; }
-
-                // Create the problem
-                chemistryProblem problem;
-                problem.pi         = p[celli];
-                problem.Ti         = T[celli];
-                problem.c          = c_;
-                problem.rhoi       = rho[celli];
-                problem.deltaTChem = this->deltaTChem_[celli];
-                problem.cellid     = celli;
-                problem.deltaT     = deltaT;
+                
 
                 chem_problems.append(problem); 
         }
@@ -412,56 +408,59 @@ pyJacChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<volScalarF
     return chem_problems;
 }
 
+
 template <class ReactionThermo, class ThermoType>
-chemistrySolution
-pyJacChemistryModel<ReactionThermo, ThermoType>::solve_single(chemistryProblem& prob) const {
+void pyJacChemistryModel<ReactionThermo, ThermoType>::solve_single(chemistryProblem&  prob,
+                                                                   chemistrySolution& soln) const {
 
-    chemistrySolution soln;
-    soln.cellid = prob.cellid;
-    //- Initialize the time progress
-    scalar timeLeft = prob.deltaT;
+    //TODO: Make this work so that chemistryProblem is a const &
 
-    scalarList c0 = prob.c;
+    scalar     timeLeft = prob.deltaT;
+    const scalarList c0 = prob.c;
+
+
     // Calculate the chemical source terms
     while (timeLeft > small) {
         scalar dt = timeLeft;
-
         this->solve(prob.c, prob.Ti, prob.pi, dt, prob.deltaTChem);
         timeLeft -= dt;
     }
-    scalarList RRtmp(this->nSpecie_, 0.0);
+
     soln.c = prob.c;
+    /*
     // RR_ should be weighted by density, due to NS formulation. rr = Y0-Y1 / dt, but RR_ =
     // rho(Y0-Y1)/dt , the effect at Sh() function too!
     for (label i = 0; i < this->nSpecie_; i++) {
-        RRtmp[i] = prob.rhoi * (soln.c[i] - c0[i]) / prob.deltaT;
+        soln.RR[i] = prob.rhoi * (soln.c[i] - c0[i]) / prob.deltaT;
     }
-    soln.RR = RRtmp;
-
+    */
+    soln.RR = prob.rhoi * (soln.c - c0) / prob.deltaT;
+    soln.cellid     = prob.cellid;
     soln.deltaTChem = min(prob.deltaTChem, this->deltaTChemMax_);
-
-    return soln;
 }
 
-template <class ReactionThermo, class ThermoType>
-DynamicList<chemistrySolution> pyJacChemistryModel<ReactionThermo, ThermoType>::solve_list(
-    DynamicList<chemistryProblem>& problems) const {
 
-    DynamicList<chemistrySolution> chem_solns(problems.size(), chemistrySolution());
-
-    for (size_t i = 0; i < chem_solns.size(); i++) { chem_solns[i] = solve_single(problems[i]); }
-    return chem_solns;
-}
 
 template <class ReactionThermo, class ThermoType>
 chemistryLoadBalancingMethod::buffer_t<chemistrySolution>
 pyJacChemistryModel<ReactionThermo, ThermoType>::solve_buffer(
     chemistryLoadBalancingMethod::buffer_t<chemistryProblem>& problems) const {
 
-    chemistryLoadBalancingMethod::buffer_t<chemistrySolution> ret;
+    //allocate the solutions buffer
+    chemistryLoadBalancingMethod::buffer_t<chemistrySolution> solutions;
+    for (int i = 0; i < problems.size(); ++i){
+        DynamicList<chemistrySolution> sublist(problems[i].size(), chemistrySolution(this->nSpecie_));
+        solutions.append(sublist);
+    }
 
-    for (size_t i = 0; i < problems.size(); ++i) { ret.append(solve_list(problems[i])); }
-    return ret;
+    for (int i = 0; i < solutions.size(); ++i){
+        for (int j = 0; j < solutions[i].size(); ++j ){
+            
+            solve_single(problems[i][j], solutions[i][j]);
+        }
+    }
+
+    return solutions;
 }
 
 template <class ReactionThermo, class ThermoType>
