@@ -418,7 +418,6 @@ void pyJacChemistryModel<ReactionThermo, ThermoType>::solve_single(chemistryProb
         timeLeft -= dt;
     }
 
-    soln.c = prob.c;
     /*
     // RR_ should be weighted by density, due to NS formulation. rr = Y0-Y1 / dt, but RR_ =
     // rho(Y0-Y1)/dt , the effect at Sh() function too!
@@ -426,7 +425,7 @@ void pyJacChemistryModel<ReactionThermo, ThermoType>::solve_single(chemistryProb
         soln.RR[i] = prob.rhoi * (soln.c[i] - c0[i]) / prob.deltaT;
     }
     */
-    soln.RR = prob.rhoi * (soln.c - c0) / prob.deltaT;
+    soln.RR = prob.rhoi * (prob.c - c0) / prob.deltaT;
     soln.cellid     = prob.cellid;
     soln.deltaTChem = min(prob.deltaTChem, this->deltaTChemMax_);
 }

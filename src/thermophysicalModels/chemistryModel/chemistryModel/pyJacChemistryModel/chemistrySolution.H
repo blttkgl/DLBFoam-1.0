@@ -8,7 +8,7 @@ struct chemistrySolution {
 
     chemistrySolution() = default;
 
-    chemistrySolution(int nspecie) : c(nspecie, 0.0), RR(nspecie, 0.0), deltaTChem(0.0), cellid(0) {}
+    chemistrySolution(int nspecie) : RR(nspecie, 0.0), deltaTChem(0.0), cellid(0) {}
 
 
     // TODO: implement!
@@ -16,7 +16,6 @@ struct chemistrySolution {
 
     bool operator!=(const chemistrySolution& rhs) const { return !(*this == rhs); }
 
-    scalarField c;
     scalarField RR;
     scalar deltaTChem;
     label    cellid;
