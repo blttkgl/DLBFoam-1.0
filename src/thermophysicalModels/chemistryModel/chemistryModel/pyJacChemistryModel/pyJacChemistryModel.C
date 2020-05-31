@@ -352,14 +352,16 @@ pyJacChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<volScalarF
 
     // TODO: Add refcell and Treact as conditions to get problems.
 
-
-    DynamicList<chemistryProblem> chem_problems;
     const scalarField&            T = this->thermo().T();
     const scalarField&            p = this->thermo().p();
     tmp<volScalarField>           trho(this->thermo().rho());
-    const scalarField&            rho = trho();
-    bool refCellFound = false;
-    chemistrySolution ref_soln(this->nSpecie_);
+    const scalarField&            rho          = trho();
+    bool                          refCellFound = false;
+
+    DynamicList<chemistryProblem> chem_problems;
+    chem_problems.reserve(T.size());
+
+    chemistrySolution             ref_soln(this->nSpecie_);
 
     forAll(p, celli) {
 
@@ -375,34 +377,24 @@ pyJacChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<volScalarF
         problem.deltaT     = deltaT;
 
 
-        if (refcell_mapper_->active())
-        {
-            
-         
-            if(refcell_mapper_-> shouldMap(problem))
-            {  
-                 // TODO: Also update deltaTmin from reference solution
-                if(!refCellFound)
-                {
+        
+        if (refcell_mapper_->active()) {
+
+            if (refcell_mapper_->shouldMap(problem)) {
+                // TODO: Also update deltaTmin from reference solution
+                if (!refCellFound) {
                     solve_single(problem, ref_soln);
-                    update_reaction_rate(ref_soln,ref_soln.cellid);
+                    update_reaction_rate(ref_soln, ref_soln.cellid);
                     refCellFound = true;
+                } else {
+                    update_reaction_rate(ref_soln, celli);
                 }
-                else
-                {
-                    update_reaction_rate(ref_soln,celli);
-                }
-            }
-            else
-            {
+            } else {
                 chem_problems.append(problem);
             }
-        }
-        else
-        {
-                
+        } else {
 
-                chem_problems.append(problem); 
+            chem_problems.append(problem);
         }
     }
     return chem_problems;
