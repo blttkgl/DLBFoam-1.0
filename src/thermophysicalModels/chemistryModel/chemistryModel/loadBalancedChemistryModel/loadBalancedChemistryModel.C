@@ -118,7 +118,7 @@ void loadBalancedChemistryModel<ReactionThermo, ThermoType>::solve_single(
 
 
     soln.c_increment = (prob.c - c0) / prob.deltaT;
-    soln.deltaTChem = prob.deltaTChem;
+    soln.deltaTChem = min(prob.deltaTChem,this->deltaTChemMax_);
     //Timer end
     soln.cpuTime = time.timeIncrement();
     soln.cellid = prob.cellid;
@@ -145,8 +145,7 @@ scalar loadBalancedChemistryModel<ReactionThermo, ThermoType>::update_reaction_r
         }
 
         deltaTMin = min(solution.deltaTChem, deltaTMin);
-        deltaTMin = min(deltaTMin, this->deltaTChemMax_);
-        this->deltaTChem_[solution.cellid] = deltaTMin;
+        this->deltaTChem_[solution.cellid] = solution.deltaTChem;
         this->cpu_times_[solution.cellid]  = solution.cpuTime;
     }
 
