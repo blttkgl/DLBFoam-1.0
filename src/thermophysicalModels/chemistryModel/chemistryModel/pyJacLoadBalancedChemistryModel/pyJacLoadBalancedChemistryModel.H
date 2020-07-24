@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::loadBalancedChemistryModel
+    Foam::pyJacLoadBalancedChemistryModel
 
 Description
     Extends base chemistry model by adding a thermo package, and ODE functions.
@@ -30,13 +30,13 @@ Description
     terms.
 
 SourceFiles
-    loadBalancedChemistryModelI.H
-    loadBalancedChemistryModel.C
+    pyJacLoadBalancedChemistryModelI.H
+    pyJacLoadBalancedChemistryModel.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef loadBalancedChemistryModel_H
-#define loadBalancedChemistryModel_H
+#ifndef pyJacLoadBalancedChemistryModel_H
+#define pyJacLoadBalancedChemistryModel_H
 
 #include "StandardChemistryModel.H"
 #include "clockTime.H"
@@ -44,6 +44,14 @@ SourceFiles
 #include "simpleBalancingMethod.H"
 #include "chemistryProblem.H"
 #include "chemistrySolution.H"
+
+// pyJac dependencies
+extern "C" {
+#include "chem_utils.h"
+#include "dydt.h"
+#include "jacob.h"
+};
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -54,13 +62,13 @@ namespace Foam
 class fvMesh;
 
 /*---------------------------------------------------------------------------*\
-                      Class loadBalancedChemistryModel Declaration
+                      Class pyJacLoadBalancedChemistryModel Declaration
 \*---------------------------------------------------------------------------*/
 
 template <class ReactionThermo, class ThermoType>
-class loadBalancedChemistryModel :
+class pyJacLoadBalancedChemistryModel :
     // public aaltoChemistryModelBase<ReactionThermo, ThermoType>
-    public StandardChemistryModel<ReactionThermo, ThermoType> {
+    public loadBalancedChemistryModel<ReactionThermo, ThermoType> {
     // Private Member Functions
 
     //- Solve the reaction system for the given time step
@@ -68,85 +76,41 @@ class loadBalancedChemistryModel :
     template <class DeltaTType> scalar solve(const DeltaTType& deltaT);
 
     //- Disallow copy constructor
-    loadBalancedChemistryModel(const loadBalancedChemistryModel&);
+    pyJacLoadBalancedChemistryModel(const pyJacLoadBalancedChemistryModel&);
 
     //- Disallow default bitwise assignment
-    void operator=(const loadBalancedChemistryModel&);
+    void operator=(const pyJacLoadBalancedChemistryModel&);
 
 public:
     //- Runtime type information
-    TypeName("loadBalanced");
+    TypeName("loadBalanced_pyJac");
 
     // Constructors
 
     //- Construct from thermo
-    loadBalancedChemistryModel(ReactionThermo& thermo);
+    pyJacLoadBalancedChemistryModel(ReactionThermo& thermo);
 
     //- Destructor
-    virtual ~loadBalancedChemistryModel();
+    virtual ~pyJacLoadBalancedChemistryModel();
 
+    inline virtual label nEqns() const;
 
-    virtual scalar solve(const scalar deltaT) override;
-    virtual scalar solve(const scalarField& deltaT) override;
+    //- Override jacobian and derivatives function from StandardChemistryModel
 
+    virtual void jacobian(const scalar t, const scalarField& c, scalarField& dcdt, scalarSquareMatrix& J) const;   
 
-    // ODE functions (overriding abstract functions in ODE.H)
-    // this function is somehow injected in the ODE
-    virtual void
-    solve(scalarField& c, scalar& T, scalar& p, scalar& deltaT, scalar& subDeltaT) const = 0;
-
+    virtual void derivatives(const scalar t, const scalarField& c, scalarField& dcdt) const;
+    
 
 private:
 
-    scalarField                   cpu_times_;
-
-    chemistryLoadBalancingMethod* load_balancer_;
-
-    ///
-    ///@brief A factory function for creating the balancer
-    ///
-    ///@return chemistryLoadBalancingMethod* 
-    ///
-    static chemistryLoadBalancingMethod* create_balancer();
-
     ///
     ///@brief 
     ///
-    ///@param prob 
-    ///@param soln 
     ///
-    void solve_single(chemistryProblem& prob, chemistrySolution& soln) const;
-
-
+    ///@return double 
     ///
-    ///@brief 
-    ///
-    ///@param problems 
-    ///@return chemistryLoadBalancingMethod::buffer_t<chemistrySolution> 
-    ///
-    chemistryLoadBalancingMethod::buffer_t<chemistrySolution>
-    solve_buffer(chemistryLoadBalancingMethod::buffer_t<chemistryProblem>& problems) const;
-
-
-    ///
-    ///@brief Get the problems object
-    ///
-    ///@param Y_ 
-    ///@param deltaT 
-    ///@return DynamicList<chemistryProblem> 
-    ///
-    
-    template<class DeltaTType>
-    DynamicList<chemistryProblem> get_problems(PtrList<volScalarField>& Y_, const DeltaTType& deltaT);
-
-
-    ///
-    ///@brief 
-    ///
-    ///@param solutions 
-    ///@return scalar 
-    ///
-    scalar update_reaction_rates(const  chemistryLoadBalancingMethod::buffer_t<chemistrySolution>& solutions);
+    double compute_c(const scalarField& rho, const label& i, const label& celli) const;
 
     ///
     ///@brief 
@@ -154,18 +118,9 @@ private:
     ///
     ///@return double 
     ///
-    virtual double compute_c(const scalarField& rho, const label& i, const label& celli) const;
-
-    ///
-    ///@brief 
-    ///
-    ///
-    ///@return double 
-    ///
-    virtual double compute_RR(const label& j, const chemistrySolution& solution) const;
+    double compute_RR(const label& j, const chemistrySolution& solution) const;
 
 
- 
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -173,12 +128,12 @@ private:
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
+#include "pyJacLoadBalancedChemistryModelI.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #ifdef NoRepository
-    #include "loadBalancedChemistryModel.C"
+    #include "pyJacLoadBalancedChemistryModel.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -38,6 +38,7 @@ Description
 #include "rhoReactionThermo.H"
 
 #include "loadBalancedChemistryModel.H"
+#include "pyJacLoadBalancedChemistryModel.H"
 
 
 #include "thermoPhysicsTypes.H"
@@ -284,6 +285,244 @@ namespace Foam
     makeChemistryModelType
     (
         loadBalancedChemistryModel,
+        rhoReactionThermo,
+        constEThermoPhysics
+    );
+
+    // pyJac chemistry models
+
+    // Chemistry moldels based on sensibleEnthalpy
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constGasHThermoPhysics
+    );
+
+    
+    
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        gasHThermoPhysics
+    );
+
+    
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constIncompressibleGasHThermoPhysics
+    );
+    
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        incompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        icoPoly8HThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constHThermoPhysics
+    );
+
+    
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        gasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constIncompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        incompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        icoPoly8HThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constHThermoPhysics
+    );
+
+    
+    
+
+
+    // Chemistry moldels based on sensibleInternalEnergy
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        gasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constIncompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        incompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        icoPoly8EThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        psiReactionThermo,
+        constEThermoPhysics
+    );
+
+
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        gasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constIncompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        incompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        icoPoly8EThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
+        rhoReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        pyJacLoadBalancedChemistryModel,
         rhoReactionThermo,
         constEThermoPhysics
     );

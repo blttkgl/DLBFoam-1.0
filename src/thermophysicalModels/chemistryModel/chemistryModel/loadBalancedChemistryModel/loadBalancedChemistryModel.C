@@ -141,7 +141,7 @@ scalar loadBalancedChemistryModel<ReactionThermo, ThermoType>::update_reaction_r
 
         
         for (label j = 0; j < this->nSpecie_; j++) { 
-            this->RR_[j][solution.cellid] = get_RR(j,solution);                 
+            this->RR_[j][solution.cellid] = compute_RR(j,solution);                 
         }
 
         deltaTMin = min(solution.deltaTChem, deltaTMin);
@@ -233,7 +233,7 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
 
 
             for (label i = 0; i < this->nSpecie_; i++) { 
-                this->c_[i] = get_c(rho, i, celli); 
+                this->c_[i] = compute_c(rho, i, celli); 
             }
 
             scalar Ti = T[celli];
@@ -265,14 +265,14 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
 
 
 template <class ReactionThermo, class ThermoType>
-double loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_c(const scalarField& rho, const label& i, const label& celli){
+double loadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_c(const scalarField& rho, const label& i, const label& celli) const {
 
     return (rho[celli] * this->Y_[i][celli]/this->specieThermo_[i].W());
 
 }
 
 template <class ReactionThermo, class ThermoType>
-double loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_RR(const label& j, const chemistrySolution& solution){
+double loadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_RR(const label& j, const chemistrySolution& solution) const {
 
     return (solution.c_increment[j] * this->specieThermo_[j].W());
 

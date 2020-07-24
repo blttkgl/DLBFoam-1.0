@@ -33,12 +33,12 @@ Base OF-dev file path : src/thermophysicalModels/chemistryModel/chemistrySolver/
 
 
 #include "loadBalancedChemistryModel.H"
+#include "pyJacLoadBalancedChemistryModel.H"
 //#include "TDAC_loadBalancedChemistryModel.H" #TODO: add TDAC
 
 #include "noChemistrySolver.H"
-//#include "./ode/ode.H" //important to not use the stock ode for pyJac
+#include "ode/ode.H" //important to not use the stock ode for pyJac
 
-#include "ode.H" //important to use the stock ODE's with others
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #define makePexChemistrySolverType(SS, Comp, Thermo)                              \
@@ -60,6 +60,22 @@ Base OF-dev file path : src/thermophysicalModels/chemistryModel/chemistrySolver/
 ##Comp##Table_;                                                                \
                                                                                \
                                                                                \
+    typedef SS<pyJacLoadBalancedChemistryModel<Comp, Thermo>> loadBalanced_pyJac##SS##Comp##Thermo;     \
+                                                                               \
+    defineTemplateTypeNameAndDebugWithName                                     \
+    (                                                                          \
+        loadBalanced_pyJac##SS##Comp##Thermo,                                               \
+        (#SS"<" + word(pyJacLoadBalancedChemistryModel<Comp, Thermo>::typeName_()) + "<"   \
+        + word(Comp::typeName_()) + "," + Thermo::typeName() + ">>").c_str(),  \
+        0                                                                      \
+    );                                                                         \
+                                                                               \
+    BasicChemistryModel<Comp>::                                                \
+        add##thermo##ConstructorToTable<loadBalanced_pyJac##SS##Comp##Thermo>               \
+        add##loadBalanced_pyJac##SS##Comp##Thermo##thermo##ConstructorTo##BasicChemistryModel\
+##Comp##Table_;                                                                \
+                                                                               \
+                                                                               \
 
 
 //TODO: add TDAC
@@ -74,6 +90,7 @@ Base OF-dev file path : src/thermophysicalModels/chemistryModel/chemistrySolver/
         Thermo                                                                 \
     );                                                                         \
                                                                                \
+                                                                    \
     makePexChemistrySolverType                                                    \
     (                                                                          \
         ode,                                                                   \
