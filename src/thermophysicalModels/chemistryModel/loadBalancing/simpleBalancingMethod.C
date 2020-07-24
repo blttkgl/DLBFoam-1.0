@@ -45,11 +45,6 @@ simpleBalancingMethod::compute_send_counts(const node_ptr&                      
     send_times.insert(send_times.begin(), remaining);
 
     auto   sum_op = [](double sum, const chemistryProblem& rhs) { return sum + rhs.cpuTime; };
-    runtime_assert(
-        std::accumulate(send_times.begin(), send_times.end(), 0.0) == 
-        std::accumulate(problems.begin(), problems.end(), 0.0, sum_op),
-        "Original problem time not matching the split send times"
-    );
 
 
     return times_to_problem_counts(send_times, problems);
@@ -128,7 +123,10 @@ std::vector<int> simpleBalancingMethod::times_to_problem_counts(
         begin += count;
         counts.push_back(count);
     }
-
+    if (counts.size()>1)
+    {
+        counts.back() = (problems.size() - std::accumulate(counts.begin(), counts.end()-1 , 0.0));
+    }
     return counts;
 }
 

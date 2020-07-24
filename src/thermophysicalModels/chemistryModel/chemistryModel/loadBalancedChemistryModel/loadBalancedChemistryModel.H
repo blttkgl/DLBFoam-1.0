@@ -148,6 +148,24 @@ private:
     ///
     scalar update_reaction_rates(const  chemistryLoadBalancingMethod::buffer_t<chemistrySolution>& solutions);
 
+    ///
+    ///@brief 
+    ///
+    ///
+    ///@return double 
+    ///
+    double get_c(const scalarField& rho, const label& i, const label& celli);
+
+    ///
+    ///@brief 
+    ///
+    ///
+    ///@return double 
+    ///
+    double get_RR(const label& j, const chemistrySolution& solution);
+
+
+ 
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

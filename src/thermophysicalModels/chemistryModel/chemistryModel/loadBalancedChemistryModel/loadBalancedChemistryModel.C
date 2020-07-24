@@ -98,7 +98,6 @@ void loadBalancedChemistryModel<ReactionThermo, ThermoType>::solve_single(
 
 
 
-
     scalar           timeLeft = prob.deltaT;
     const scalarList c0       = prob.c;
 
@@ -123,6 +122,7 @@ void loadBalancedChemistryModel<ReactionThermo, ThermoType>::solve_single(
     //Timer end
     soln.cpuTime = time.timeIncrement();
     soln.cellid = prob.cellid;
+    soln.rhoi = prob.rhoi;
 
 
 }
@@ -141,7 +141,7 @@ scalar loadBalancedChemistryModel<ReactionThermo, ThermoType>::update_reaction_r
 
         
         for (label j = 0; j < this->nSpecie_; j++) { 
-            this->RR_[j][solution.cellid] = solution.c_increment[j] * this->specieThermo_[j].W();                 
+            this->RR_[j][solution.cellid] = get_RR(j,solution);//solution.c_increment[j] * this->specieThermo_[j].W();                 
         }
 
         deltaTMin = min(solution.deltaTChem, deltaTMin);
@@ -233,7 +233,7 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
 
 
             for (label i = 0; i < this->nSpecie_; i++) { 
-                this->c_[i] = rho[celli] * this->Y_[i][celli]/this->specieThermo_[i].W(); 
+                this->c_[i] = get_c(rho, i, celli); 
             }
 
             scalar Ti = T[celli];
@@ -264,7 +264,19 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
 }
 
 
+template <class ReactionThermo, class ThermoType>
+double loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_c(const scalarField& rho, const label& i, const label& celli){
 
+    return (rho[celli] * this->Y_[i][celli]/this->specieThermo_[i].W());
+
+}
+
+template <class ReactionThermo, class ThermoType>
+double loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_RR(const label& j, const chemistrySolution& solution){
+
+    return (solution.c_increment[j] * this->specieThermo_[j].W());
+
+}
 
 
 } // namespace Foam
