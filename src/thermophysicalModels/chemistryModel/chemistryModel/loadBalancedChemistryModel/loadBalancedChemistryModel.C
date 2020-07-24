@@ -141,7 +141,7 @@ scalar loadBalancedChemistryModel<ReactionThermo, ThermoType>::update_reaction_r
 
         
         for (label j = 0; j < this->nSpecie_; j++) { 
-            this->RR_[j][solution.cellid] = get_RR(j,solution);//solution.c_increment[j] * this->specieThermo_[j].W();                 
+            this->RR_[j][solution.cellid] = get_RR(j,solution);                 
         }
 
         deltaTMin = min(solution.deltaTChem, deltaTMin);
