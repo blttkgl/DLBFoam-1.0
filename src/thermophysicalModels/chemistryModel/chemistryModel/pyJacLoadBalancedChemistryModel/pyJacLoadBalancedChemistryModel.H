@@ -100,9 +100,19 @@ public:
     virtual void jacobian(const scalar t, const scalarField& c, scalarField& dcdt, scalarSquareMatrix& J) const;   
 
     virtual void derivatives(const scalar t, const scalarField& c, scalarField& dcdt) const;
+
+    //- Override Qdot function from StandardChemistryModel for using pyJac's enthalpy of formation
+
+    virtual tmp<volScalarField> Qdot() const;
     
 
 private:
+
+    ///
+    ///@brief List of enthalpy of formation from pyJac
+    ///
+    ///
+    scalarList sp_enth_form;
 
     ///
     ///@brief Compute c_ variable as mass fraction

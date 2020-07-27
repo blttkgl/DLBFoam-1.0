@@ -33,7 +33,14 @@ template <class ReactionThermo, class ThermoType>
 pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::pyJacLoadBalancedChemistryModel(
     ReactionThermo& thermo)
     : loadBalancedChemistryModel<ReactionThermo, ThermoType>(thermo)
-       {
+    , sp_enth_form(this->nSpecie_) {
+
+    if (this->chemistry_) {
+        std::vector<double> sp_enth_form_(this->nSpecie_, 0.0);
+        //- Enthalpy of formation is taken from pyJac at T-standard
+        eval_h(298.15, sp_enth_form_.data());
+        for (int i = 0; i < this->nSpecie_; i++) { sp_enth_form[i] = sp_enth_form_[i]; }
+    }
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -114,6 +121,45 @@ void pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::derivatives(co
     for (label i = 0; i < this->nSpecie_; i++) { dcdt[i] = dy[i]; }
     // dp/dt = 0
     dcdt[this->nSpecie_] = 0.0;
+
+}
+
+template <class ReactionThermo, class ThermoType>
+Foam::tmp<Foam::volScalarField>
+pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::Qdot() const {
+
+    tmp<volScalarField> tQdot
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "Qdot",
+                this->mesh_.time().timeName(),
+                this->mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            this->mesh_,
+            dimensionedScalar("zero", dimEnergy/dimVolume/dimTime, 0)
+        )
+    );
+
+    if (this->chemistry_)
+    {
+        scalarField& Qdot = tQdot.ref();
+
+        forAll(this->Y_, i)
+        {
+            forAll(Qdot, celli)
+            {
+                Qdot[celli] -= sp_enth_form[i]*this->RR_[i][celli];
+            }
+        }
+    }
+
+    return tQdot;
 
 }
 
