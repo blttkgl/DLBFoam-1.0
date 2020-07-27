@@ -42,6 +42,7 @@ SourceFiles
 #include "clockTime.H"
 
 #include "simpleBalancingMethod.H"
+#include "simpleRefMappingMethod.H"
 #include "chemistryProblem.H"
 #include "chemistrySolution.H"
 
@@ -102,6 +103,8 @@ private:
 
     chemistryLoadBalancingMethod* load_balancer_;
 
+    chemistryRefMappingMethod* ref_mapper_;
+
     ///
     ///@brief A factory function for creating the balancer
     ///
@@ -109,6 +112,13 @@ private:
     ///
     static chemistryLoadBalancingMethod* create_balancer();
 
+    ///
+    ///@brief A factory function for creating the refmapper
+    ///
+    ///@return chemistryRefMappingMethod* 
+    ///
+    chemistryRefMappingMethod* create_refmapper();
+ 
     ///
     ///@brief 
     ///
@@ -149,17 +159,26 @@ private:
     scalar update_reaction_rates(const  chemistryLoadBalancingMethod::buffer_t<chemistrySolution>& solutions);
 
     ///
-    ///@brief 
+    ///@brief updates a single problem's reaction rate for index i
     ///
     ///
+    virtual void update_reaction_rate(const chemistrySolution& solution, const label& i);
+
+    ///
+    ///@brief Compute c_ variable as concentration
+    ///
+    ///@param rho 
+    ///@param i 
+    ///@param celli 
     ///@return double 
     ///
     virtual double compute_c(const scalarField& rho, const label& i, const label& celli) const;
 
     ///
-    ///@brief 
+    ///@brief Compute reaction rate for concentration
     ///
-    ///
+    ///@param j 
+    ///@param solution 
     ///@return double 
     ///
     virtual double compute_RR(const label& j, const chemistrySolution& solution) const;

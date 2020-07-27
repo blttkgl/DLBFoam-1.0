@@ -34,7 +34,8 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::loadBalancedChemistryMod
     ReactionThermo& thermo)
     : StandardChemistryModel<ReactionThermo, ThermoType>(thermo)
     , cpu_times_(this->mesh().cells().size(), 0.0)
-    , load_balancer_(create_balancer()) {
+    , load_balancer_(create_balancer())
+    , ref_mapper_(create_refmapper()) {
 
     Info << "Running with a load balanced" << endl;
 }
@@ -44,6 +45,7 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::loadBalancedChemistryMod
 template <class ReactionThermo, class ThermoType>
 loadBalancedChemistryModel<ReactionThermo, ThermoType>::~loadBalancedChemistryModel(){
     delete load_balancer_; // TODO: use a smart pointer
+    delete ref_mapper_;
 }
 
 
@@ -53,6 +55,20 @@ chemistryLoadBalancingMethod* loadBalancedChemistryModel<ReactionThermo, ThermoT
 
     return new simpleBalancingMethod();
 
+}
+
+template <class ReactionThermo, class ThermoType>
+chemistryRefMappingMethod* loadBalancedChemistryModel<ReactionThermo, ThermoType>::create_refmapper(){
+
+    const IOdictionary chemistryDict_tmp(
+    IOobject(this->thermo().phasePropertyName("chemistryProperties"),
+                this->thermo().db().time().constant(),
+                this->thermo().db(),
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE,
+                false));
+
+    return new simpleRefMappingMethod(chemistryDict_tmp, this->thermo().composition());
 }
 
 
@@ -221,8 +237,9 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
     const scalarField&            p = this->thermo().p();
     tmp<volScalarField>           trho(this->thermo().rho());
     const scalarField&            rho          = trho();
-
+    bool                          refCellFound = false;
     DynamicList<chemistryProblem> chem_problems;
+    chemistrySolution             ref_soln(this->nSpecie_);
     
     //TODO: reserve
     //chem_problems.reserve(T.size());
@@ -250,9 +267,22 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
                 problem.cpuTime    = this->cpu_times_[celli];
                 problem.cellid     = celli;
 
-                chem_problems.append(problem);
+                if (ref_mapper_->active() && ref_mapper_->shouldMap(problem)) {
+                    
+                    if (!refCellFound) {
+                        solve_single(problem, ref_soln);
+                        update_reaction_rate(ref_soln, ref_soln.cellid);
+                        refCellFound = true;
+                    } 
+                    
+                    else {
+                        update_reaction_rate(ref_soln, celli);
+                    }
+                } 
+                else {
+                    chem_problems.append(problem);
+                }
             }
-
             else {
                 for (label i = 0; i < this->nSpecie(); i++) { this->RR_[i][celli] = 0; }
             }
@@ -262,6 +292,12 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
     return chem_problems;
 }
 
+template <class ReactionThermo, class ThermoType>
+void loadBalancedChemistryModel<ReactionThermo, ThermoType>::update_reaction_rate(const chemistrySolution& solution, const label& i) {
+
+    for (label j = 0; j < this->nSpecie_; j++) { this->RR_[j][i] = compute_RR(j,solution); }
+    this->deltaTChem_[i] = min(solution.deltaTChem, this->deltaTChemMax_);
+}
 
 template <class ReactionThermo, class ThermoType>
 double loadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_c(const scalarField& rho, const label& i, const label& celli) const {

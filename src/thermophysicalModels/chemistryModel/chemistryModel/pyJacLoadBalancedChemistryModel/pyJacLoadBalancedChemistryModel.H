@@ -105,17 +105,20 @@ public:
 private:
 
     ///
-    ///@brief 
+    ///@brief Compute c_ variable as mass fraction
     ///
-    ///
+    ///@param rho 
+    ///@param i 
+    ///@param celli 
     ///@return double 
     ///
     double compute_c(const scalarField& rho, const label& i, const label& celli) const;
 
     ///
-    ///@brief 
+    ///@brief Compute reaction rate for mass fraction
     ///
-    ///
+    ///@param j 
+    ///@param solution 
     ///@return double 
     ///
     double compute_RR(const label& j, const chemistrySolution& solution) const;
