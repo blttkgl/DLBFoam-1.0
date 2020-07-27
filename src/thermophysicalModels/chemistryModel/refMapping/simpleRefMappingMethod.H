@@ -43,7 +43,7 @@ public:
     
 
 
-    bool shouldMap(const chemistryProblem& problem) const;
+    bool shouldMap(const scalarField& mass_fraction) const;
     
 
     bool active() const {return active_;}
@@ -67,7 +67,7 @@ private:
 
     mixtureFraction mixture_fraction_;
 
-    bool check_if_refcell(const chemistryProblem& problem) const;
+    bool check_if_refcell(const scalarField& mass_fraction) const;
 
 
 

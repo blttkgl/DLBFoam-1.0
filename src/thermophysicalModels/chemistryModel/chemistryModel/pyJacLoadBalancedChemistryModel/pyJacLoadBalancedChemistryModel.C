@@ -118,7 +118,7 @@ void pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::derivatives(co
 }
 
 template <class ReactionThermo, class ThermoType>
-double pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_c(const scalarField& rho, const label& i, const label& celli) const {
+double pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_c(const scalar& rho, const label& i, const label& celli) const {
 
     return (this->Y_[i][celli]);
 
@@ -128,6 +128,13 @@ template <class ReactionThermo, class ThermoType>
 double pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_RR(const label& j, const chemistrySolution& solution) const {
 
     return (solution.rhoi * solution.c_increment[j]);
+
+}
+
+template <class ReactionThermo, class ThermoType>
+scalarField pyJacLoadBalancedChemistryModel<ReactionThermo, ThermoType>::get_mass_fraction(const chemistryProblem& problem) const {
+
+    return problem.c;
 
 }
 

@@ -249,7 +249,7 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
 
 
             for (label i = 0; i < this->nSpecie_; i++) { 
-                this->c_[i] = compute_c(rho, i, celli); 
+                this->c_[i] = compute_c(rho[celli], i, celli); 
             }
 
             scalar Ti = T[celli];
@@ -267,7 +267,7 @@ loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_problems(PtrList<vol
                 problem.cpuTime    = this->cpu_times_[celli];
                 problem.cellid     = celli;
 
-                if (ref_mapper_->active() && ref_mapper_->shouldMap(problem)) {
+                if (ref_mapper_->active() && ref_mapper_->shouldMap(get_mass_fraction(problem))) {
                     
                     if (!refCellFound) {
                         solve_single(problem, ref_soln);
@@ -300,9 +300,9 @@ void loadBalancedChemistryModel<ReactionThermo, ThermoType>::update_reaction_rat
 }
 
 template <class ReactionThermo, class ThermoType>
-double loadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_c(const scalarField& rho, const label& i, const label& celli) const {
+double loadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_c(const scalar& rho, const label& i, const label& celli) const {
 
-    return (rho[celli] * this->Y_[i][celli]/this->specieThermo_[i].W());
+    return (rho * this->Y_[i][celli]/this->specieThermo_[i].W());
 
 }
 
@@ -313,5 +313,16 @@ double loadBalancedChemistryModel<ReactionThermo, ThermoType>::compute_RR(const 
 
 }
 
+template <class ReactionThermo, class ThermoType>
+scalarField loadBalancedChemistryModel<ReactionThermo, ThermoType>::get_mass_fraction(const chemistryProblem& problem) const {
+
+    scalarField tmp(this->nSpecie_);
+    for (label i = 0; i < this->nSpecie_; i++) { 
+        tmp[i] = this->Y_[i][problem.cellid]; 
+    }
+
+    return (tmp);
+
+}
 
 } // namespace Foam

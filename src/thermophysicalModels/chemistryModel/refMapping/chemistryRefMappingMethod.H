@@ -69,7 +69,7 @@ public:
 
 
 
-    virtual bool shouldMap(const chemistryProblem& problem) const = 0;
+    virtual bool shouldMap(const scalarField& mass_fraction) const = 0;
 
     virtual bool active() const = 0;
 

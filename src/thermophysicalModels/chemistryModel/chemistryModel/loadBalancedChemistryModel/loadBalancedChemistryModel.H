@@ -172,7 +172,7 @@ private:
     ///@param celli 
     ///@return double 
     ///
-    virtual double compute_c(const scalarField& rho, const label& i, const label& celli) const;
+    virtual double compute_c(const scalar& rho, const label& i, const label& celli) const;
 
     ///
     ///@brief Compute reaction rate for concentration
@@ -183,8 +183,14 @@ private:
     ///
     virtual double compute_RR(const label& j, const chemistrySolution& solution) const;
 
+    ///
+    ///@brief Get the mass fraction field for refmapping
+    ///
+    ///@param problem 
+    ///@return scalarField 
+    ///
+    virtual scalarField get_mass_fraction(const chemistryProblem& problem) const;
 
- 
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
