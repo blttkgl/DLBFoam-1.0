@@ -1,5 +1,5 @@
-serial_benchmark.C
+benchmark.C
 
 
-EXE = $(FOAM_USER_APPBIN)/benchmarkChemistry
+EXE = $(FOAM_USER_APPBIN)/chemistryBenchmark
 
