@@ -25,7 +25,7 @@ stopAt          endTime;
 
 endTime         0.5;
 
-deltaT          1e-5;
+deltaT          1e-7;
 
 writeControl    adjustableRunTime;
 
@@ -53,7 +53,6 @@ maxCo           0.2;
 libs
 (
     "libchemistryModel_pex.so"
-    "$FOAM_USER_LIBBIN/libc_pyjac.so"
 );
 
 
