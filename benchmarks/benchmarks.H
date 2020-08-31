@@ -76,6 +76,7 @@ struct BenchmarkSolveSingle{
 
 
     const BenchmarkInfo& get_info() const {return m_info;}
+    basicChemistryModel* get_model() {return m_model;}
 
 
     std::vector<ChemistryProblem> create_problems(bool heavy) const {

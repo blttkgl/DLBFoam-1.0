@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdlib.h>     //for using the function sleep
 namespace Foam {
 
 
@@ -7,12 +7,19 @@ void sanity_check(volScalarField& p, volScalarField& rho, PtrList<volScalarField
 
     basicChemistryModel* model1 = new ode<StandardChemistryModel<psiReactionThermo, ThermoType>>(thermo);
     basicChemistryModel* model2 = new ode<LoadBalancedChemistryModel<psiReactionThermo, ThermoType>>(thermo);
+        
 
-    set_master_heavy(rho, thermo);
+
+        
+    //basicChemistryModel* model2 = new ode<StandardChemistryModel<psiReactionThermo, ThermoType>>(thermo);
+
+    
 
     for (size_t i = 0; i < 2; ++i){
-        model1->solve(detail::FLOWTIMESTEP);
-        model2->solve(detail::FLOWTIMESTEP);
+    set_master_heavy(rho, thermo);
+        auto asd = model1->solve(detail::FLOWTIMESTEP);
+    set_master_heavy(rho, thermo);
+        auto asd2 = model2->solve(detail::FLOWTIMESTEP);
     }
 
 
@@ -23,20 +30,22 @@ void sanity_check(volScalarField& p, volScalarField& rho, PtrList<volScalarField
         const scalarField& r1 = model1->RR(i);
         const scalarField& r2 = model2->RR(i);
 
-
         scalar sum = 0.0;
         forAll(r1, celli) {
 
-            scalar diff = r1[celli] - r2[celli];
-            sum += (diff * diff);
+            double a = r1[celli];
+            double b = r2[celli];
+            double diff = std::abs(a-b);
+            if (diff > 1E-9){
+                Pout << "Load balanced model and standard model give different answers! Difference: " << diff << endl; 
+                
+                std::exit(1);
+            }
+            
+        
+
         }
 
-        scalar norm =std::sqrt(sum);
-
-
-        if (norm > 1E-10){
-            Info << "Load balanced model and standard model give different answers! Be careful!" << endl;
-        }
 
     }
     

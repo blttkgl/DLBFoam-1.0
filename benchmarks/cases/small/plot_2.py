@@ -28,6 +28,8 @@ def plot_all(df):
     
     
     
+    Sr = []    
+    x = []
     for key, item in grouped:
         
         
@@ -35,6 +37,7 @@ def plot_all(df):
         
         func = item['Function'].unique()[0]
         cond = item['Init. Condition'].unique()[0]
+	x.append(cond)
         #balancer = item['Balancer'].unique()[0]
         title = "{0}_{1}".format(func, cond)
         
@@ -46,7 +49,7 @@ def plot_all(df):
         n_models = len(models)
 
         print models
-        fig, axs = pl.subplots(max(2, n_models), 1, sharex=True, sharey=True)
+        #fig, axs = pl.subplots(max(2, n_models), 1, sharex=True, sharey=True)
         
         
         
@@ -55,13 +58,26 @@ def plot_all(df):
             sliced = item.loc[item["Model"] == model]
         
             #error = 
-            axs[i].bar(sliced["Processor"], sliced["Mean"], yerr = sliced["Stdev"], label=model)
+            if(i==0):
+                Srtmp=np.max(sliced["Mean"]) 
+            else:
+                Srtmp = Srtmp/np.max(sliced["Mean"])
+            #axs[i].bar(sliced["Processor"], sliced["Mean"], yerr = sliced["Stdev"], label=model)
         
-            axs[i].legend(loc="best")
+            #axs[i].legend(loc="best")
+        Sr.append(Srtmp)
 
-        pl.title(title)
-        pl.savefig("{0}.png".format(title))
-        pl.show()
+        #pl.title(title)
+        #pl.savefig("{0}.png".format(title))
+        #pl.show()
+    fig,ax = pl.subplots(1)
+    pl.grid()
+    ax.bar(np.arange(len(Sr)),Sr)
+    ax.set_xticks(np.arange(len(Sr)))
+    x = ['$\omega$ =' +  str(i) for i in x]
+    ax.set_xticklabels(x)
+    ax.set_ylabel('Speed-up Ratio')
+    pl.show()        
         
       
     

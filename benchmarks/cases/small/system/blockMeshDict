@@ -16,6 +16,9 @@ FoamFile
 
 convertToMeters 1;
 
+nProc   8;
+cellPerCore 40;
+totalCount  #calc "$nProc*$cellPerCore";
 vertices
 (
     (0.0  -0.01 -0.01)
@@ -30,7 +33,7 @@ vertices
 
 blocks
 (
-    hex (0 1 2 3 4 5 6 7) (20 20 1) simpleGrading (1 1 1)
+    hex (0 1 2 3 4 5 6 7) ($totalCount 1 1) simpleGrading (1 1 1)
 );
 
 edges

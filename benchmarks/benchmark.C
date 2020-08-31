@@ -72,14 +72,185 @@ int main(int argc, char *argv[])
     thermo.correct(); 
 
     std::vector<Result> results;
-
-    ///
+	    ///
     ///@brief Sanity check that models give same answer
     ///
     ///
     sanity_check(p, rho, Y, thermo);
 
+    // Total load is always 20%
+
+    ///
+    ///@brief Very unbalanced (1/5 of the ranks have full heavy - alpha = 0)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 5, 1);
     
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "0"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "0"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+    ///
+    ///@brief Very unbalanced (1/4 of the ranks have 0.8 heavy - alpha = 1)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 4, 0.8);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "1"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "1"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+    ///
+    ///@brief Very unbalanced (1/2 of the ranks have 0.4 heavy - alpha = 2)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 2, 0.4);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "2"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "2"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+
+    ///
+    ///@brief Very unbalanced (All of the ranks have 0.2 heavy - alpha = 2)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 1, 0.2);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "3"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "3"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+    /*
+    ///
+    ///@brief Every rank is heavy (alpha = 1)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 1);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "1"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "1"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+    ///
+    ///@brief Every 2nd rank is heavy (alpha = 0.5)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 2);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "0.5"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "0.5"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+    ///
+    ///@brief Every 4th rank is heavy (alpha = 0.25)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 4);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "0.25"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "0.25"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+
+
+    ///
+    ///@brief Every 8th rank is heavy (alpha = 0.125)
+    ///
+    ///
+    set_every_n_heavy(rho, thermo, 8);
+    
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"Standard", "solve()","none", "0.0125"}, ModelType::standard, thermo),
+            10
+        )
+    );
+    
+
+    results.push_back(
+        Runner::run(
+            BenchmarkSolve({"loadBalanced", "solve()","simple", "0.0125"}, ModelType::balanced, thermo),
+            10
+        )
+    );
+    */
 
     ///
     ///@brief Benchmark the load balanced solver for light and heavy problems
@@ -95,9 +266,9 @@ int main(int argc, char *argv[])
         Runner::run( BenchmarkSolveSingle( {"loadBalanced", "solveSingle()",  "simple", "all light"}, thermo, true), 50 )
                     );
 
-    */    
+      */  
 
-
+	/*
     /////////////////////////
     ///@brief All heavy problems on all ranks 
     ///
@@ -273,7 +444,7 @@ int main(int argc, char *argv[])
             10
         )
     );
-
+    */
     dump_results(results);
 
     

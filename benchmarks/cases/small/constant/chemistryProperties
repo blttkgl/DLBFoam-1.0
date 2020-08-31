@@ -42,19 +42,17 @@ chemistryType
 {
     solver          ode;
     method          loadBalanced;
-    //solver            ode_pyJac;
-    //method            loadBalanced_pyJac;
 }
 
 chemistry       on;
 
-initialChemicalTimeStep 1e-07;
+initialChemicalTimeStep 1e-7;
 
 odeCoeffs
 {
     solver          seulex;
     absTol          1e-8;
-    relTol          0.1;
+    relTol	    1e-3;
 }
 
 #include "reactionsGRI"
