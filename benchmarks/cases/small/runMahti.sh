@@ -16,11 +16,11 @@
 
 # Set the processor count on blockMeshDict and decomposeParDict
 foamDictionary system/decomposeParDict -entry nProc -set $N_PROCS
-foamDictionary system/decomposeParDict -entry nProc -set $N_PROCS
+foamDictionary system/blockMeshDict -entry nProc -set $N_PROCS
 
 # Set cells per core for benchmark
 CELLS_PER_CORE=20
-foamDictionary system/decomposeParDict -entry cellsPerCore -set $CELLS_PER_CORE
+foamDictionary system/blockmeshDict -entry cellsPerCore -set $CELLS_PER_CORE
 
 # Blockmesh, decomposePar
 blockMesh > log.blockMesh
