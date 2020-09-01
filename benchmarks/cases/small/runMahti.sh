@@ -12,7 +12,7 @@
 ./Allclean
 
 # Get the processor count
-N_PROCS=$(nproc)
+((N_PROCS=SLURM_NTASKS ))
 
 # Set the processor count on blockMeshDict and decomposeParDict
 foamDictionary system/decomposeParDict -entry nProc -set $N_PROCS
