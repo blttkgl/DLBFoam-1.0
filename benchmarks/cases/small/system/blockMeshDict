@@ -17,8 +17,8 @@ FoamFile
 convertToMeters 1;
 
 nProc   8;
-cellPerCore 40;
-totalCount  #calc "$nProc*$cellPerCore";
+cellsPerCore 40;
+totalCount  #calc "$nProc*$cellsPerCore";
 vertices
 (
     (0.0  -0.01 -0.01)
