@@ -20,7 +20,7 @@ foamDictionary system/blockMeshDict -entry nProc -set $N_PROCS
 
 # Set cells per core for benchmark
 CELLS_PER_CORE=20
-foamDictionary system/blockmeshDict -entry cellsPerCore -set $CELLS_PER_CORE
+foamDictionary system/blockMeshDict -entry cellsPerCore -set $CELLS_PER_CORE
 
 # Blockmesh, decomposePar
 blockMesh > log.blockMesh
