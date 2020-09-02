@@ -32,9 +32,9 @@ namespace detail{
     }
 
     static constexpr size_t n_species = 53;
-    static constexpr double FLOWTIMESTEP = 1E-7;
+    static constexpr double FLOWTIMESTEP = 1E-8;
     static constexpr double HEAVY_Y_VALUE = 0.01;
-    static constexpr double LIGHT_Y_VALUE = 0.0001;
+    static constexpr double LIGHT_Y_VALUE = 1e-9;
 
     
     ChemistryProblem create_heavy_problem() {
@@ -42,11 +42,11 @@ namespace detail{
 
         ChemistryProblem p(n_species);
 
-        p.Ti = 2000;
-        p.pi = 2e6; 
+        p.Ti = 1200;
+        p.pi = 1e5; 
         p.rhoi = 0.1824236;
-        p.deltaTChem = 1e-7;
-        p.deltaT = 1e-7;
+        p.deltaTChem = 1e-8;
+        p.deltaT = 1e-8;
 
         return p;
 
@@ -56,8 +56,8 @@ namespace detail{
     ChemistryProblem create_light_problem() {
 
         auto p = create_heavy_problem();
-        p.Ti = 400;
-        p.pi = 1000;  
+        p.Ti = 300;
+        p.pi = 100;  
         return p;
 
 
