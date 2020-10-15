@@ -23,8 +23,6 @@ Description
     A small object containing everything required for solving the reaction rate
     using the ODE. These are passed around in the load balancer.
 
-SourceFiles
-    ChemistryProblem.C
 \*---------------------------------------------------------------------------*/
 
 #ifndef ChemistryProblem_H

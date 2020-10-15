@@ -27,9 +27,6 @@ Class
 Description
     An abstract class for all reference mapping methods.
 
-SourceFiles
-    RefMapperBase.C
-
 \*---------------------------------------------------------------------------*/
 
 #ifndef RefMapperBase_H

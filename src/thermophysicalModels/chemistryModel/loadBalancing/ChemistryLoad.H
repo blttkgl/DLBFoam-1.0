@@ -24,8 +24,6 @@ Description
     A generic load object that stores a rank and a value and enables comparison
 as well as serialization through the ostream and istream operators.
 
-SourceFiles
-    ChemistryLoad.C
 \*---------------------------------------------------------------------------*/
 
 #ifndef ChemistryLoad_H

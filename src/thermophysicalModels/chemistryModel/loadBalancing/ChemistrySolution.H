@@ -22,9 +22,7 @@ Class
 Description
     A small object containing everything required for updating the reaction rate
     and the chemistry time step. These are passed around in the load balancer.
-
-SourceFiles
-    ChemistrySolution.C
+    
 \*---------------------------------------------------------------------------*/
 
 #ifndef ChemistrySolution_H

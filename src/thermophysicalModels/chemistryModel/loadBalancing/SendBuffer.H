@@ -28,9 +28,6 @@ Description
     Wrapper around Foam::DynamicList which is used to slice subsets to avoid
 unnecessary copies when sending data.
 
-SourceFiles
-    SendBuffer.C
-
 \*---------------------------------------------------------------------------*/
 
 #ifndef SendBuffer_H

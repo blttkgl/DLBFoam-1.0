@@ -28,9 +28,6 @@ Description
     Currently just a typedef to DynamicList<DynamicList>. Could possibly be made
     constant size at some point to avoid allocations during runtime.
 
-SourceFiles
-    RecvBuffer.C
-
 \*---------------------------------------------------------------------------*/
 
 #ifndef RecvBuffer_H

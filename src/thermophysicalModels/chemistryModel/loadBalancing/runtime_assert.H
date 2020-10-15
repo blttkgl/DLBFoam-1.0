@@ -25,9 +25,6 @@ License
 Description
     A runtime assert that does nothing on release builds
 
-SourceFiles
-    runtime_assert.C
-
 \*---------------------------------------------------------------------------*/
 #ifndef runtime_assert_H
 #define runtime_assert_H
