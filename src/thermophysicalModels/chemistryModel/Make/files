@@ -1,5 +1,5 @@
 loadBalancing/ChemistryProblem.H
-loadBalancing/ChemistrySolution.C
+loadBalancing/ChemistrySolution.H
 loadBalancing/ChemistryLoad.H
 loadBalancing/LoadBalancerBase.C
 loadBalancing/SendBuffer.H
