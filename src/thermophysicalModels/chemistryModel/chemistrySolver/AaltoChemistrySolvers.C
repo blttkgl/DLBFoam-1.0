@@ -22,9 +22,7 @@ License
 #include "noChemistrySolver.H"
 #include "EulerImplicit.H"
 #include "ode.H"
-//#include "./ode_pyJac/ode_pyJac.H"
 #include "LoadBalancedChemistryModel.H"
-//#include "pyJacLoadBalancedChemistryModel.H"
 
 #include "psiReactionThermo.H"
 #include "rhoReactionThermo.H"
@@ -54,26 +52,6 @@ License
         ThermoPhysics                                                          \
     );                                                                         \
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-/*
-
-#define defineChemistrySolversPyjac(ReactionThermo, ThermoPhysics)                  \
-    defineChemistrySolver                                                      \
-    (                                                                          \
-        pyJacLoadBalancedChemistryModel,                                       \
-        ReactionThermo,                                                        \
-        ThermoPhysics                                                          \
-    )
-
-#define makeChemistrySolversPyjac(Solver, ReactionThermo, ThermoPhysics)            \
-    makeChemistrySolver                                                        \
-    (                                                                          \
-        Solver,                                                                \
-        pyJacLoadBalancedChemistryModel,                                       \
-        ReactionThermo,                                                        \
-        ThermoPhysics                                                          \
-    )
-*/
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -105,29 +83,6 @@ namespace Foam
     forPolynomials(makeChemistrySolvers, noChemistrySolver, rhoReactionThermo);
     forPolynomials(makeChemistrySolvers, EulerImplicit, rhoReactionThermo);
     forPolynomials(makeChemistrySolvers, ode, rhoReactionThermo);
-
-
-
-
-
-    /*
-    //using pyjac ode
-    //gasses
-    forCommonGases(defineChemistrySolversPyjac, psiReactionThermo);
-    forCommonGases(defineChemistrySolversPyjac, rhoReactionThermo);
-
-    forCommonGases(makeChemistrySolversPyjac, ode_pyJac, psiReactionThermo);
-    forCommonGases(makeChemistrySolversPyjac, ode_pyJac, rhoReactionThermo);
-
-    //liquids
-    forCommonLiquids(defineChemistrySolversPyjac, rhoReactionThermo);
-    forCommonLiquids(makeChemistrySolvers, ode_pyJac, rhoReactionThermo);
-
-    //polynomials
-    forPolynomials(defineChemistrySolversPyjac, rhoReactionThermo);
-    forPolynomials(makeChemistrySolvers, ode_pyJac, rhoReactionThermo);
-    */
-
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
