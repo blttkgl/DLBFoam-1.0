@@ -40,7 +40,7 @@ purgeWrite      0;
 writeFormat     ascii;
 
 writeCompression off;
--
+
 timeFormat      general;
 
 timePrecision   6;
