@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ Class
 
 Description
     A generic load object that stores a rank and a value and enables comparison
-as well as serialization through the ostream and istream operators.
+as well as serialization through the OStream and IStream operators.
 
 \*---------------------------------------------------------------------------*/
 
@@ -35,6 +35,7 @@ as well as serialization through the ostream and istream operators.
 namespace Foam
 {
 
+//- A struct containing rank and load value of each processor
 struct ChemistryLoad
 {
     label  rank;  // rank of the process
@@ -72,13 +73,8 @@ struct ChemistryLoad
         return value > rhs.value;
     }
 };
-///
-///@brief Serialization for send ostream
-///
-///@param os Buffer to serialize to
-///@param l  Load to serialize
-///@return Ostream& Buffer with the object l
-///
+
+//- Serialization for send OStream
 static inline Ostream& operator<<(Ostream& os, const ChemistryLoad& l)
 {
 
@@ -88,13 +84,7 @@ static inline Ostream& operator<<(Ostream& os, const ChemistryLoad& l)
     return os;
 }
 
-///
-///@brief Gets a serialized load from istream
-///
-///@param is Buffer to get from
-///@param l  Load to which to assign
-///@return Istream& Buffer without l
-///
+//- Get a serialized load from Istream
 static inline Istream& operator>>(Istream& is, ChemistryLoad& l)
 {
 

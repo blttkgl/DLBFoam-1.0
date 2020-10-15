@@ -45,7 +45,8 @@ template <class T>
 struct SendBuffer
 {
     SendBuffer(const DynamicList<T>& values, const std::vector<label>& counts)
-        : m_values(values), m_counts(counts)
+        : 
+            m_values(values), m_counts(counts)
     {
     }
 

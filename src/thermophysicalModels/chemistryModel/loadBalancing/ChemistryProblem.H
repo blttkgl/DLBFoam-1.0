@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,7 +21,7 @@ Class
     Foam::ChemistryProblem
 Description
     A small object containing everything required for solving the reaction rate
-    using the ODE. These are passed around in the load balancer.
+    using the ODE solver. These are passed around in the load balancer.
 
 \*---------------------------------------------------------------------------*/
 
@@ -43,13 +43,13 @@ struct ChemistryProblem
     }
 
     scalarField c;
-    scalar      Ti;
-    scalar      pi;
-    scalar      rhoi;
-    scalar      deltaTChem;
-    scalar      deltaT;
-    scalar      cpuTime;
-    label       cellid;
+    scalar Ti;
+    scalar pi;
+    scalar rhoi;
+    scalar deltaTChem;
+    scalar deltaT;
+    scalar cpuTime;
+    label cellid;
 
     // TODO: implement!
     bool operator==(const ChemistryProblem& rhs) const
@@ -63,13 +63,7 @@ struct ChemistryProblem
     }
 };
 
-///
-///@brief Serialization for send
-///
-///@param os Buffer to serialize to
-///@param p Problem to serialize
-///@return Ostream& A buffer with p
-///
+//- Serialization for send
 static inline Ostream& operator<<(Ostream& os, const ChemistryProblem& p)
 {
 
@@ -85,13 +79,7 @@ static inline Ostream& operator<<(Ostream& os, const ChemistryProblem& p)
     return os;
 }
 
-///
-///@brief Gets a serialized problem from Istream
-///
-///@param is The buffer to get the object from
-///@param p  The problem to store the data
-///@return Istream& A buffer without p
-///
+//- Get a serialized problem from IStream
 static inline Istream& operator>>(Istream& is, ChemistryProblem& p)
 {
 

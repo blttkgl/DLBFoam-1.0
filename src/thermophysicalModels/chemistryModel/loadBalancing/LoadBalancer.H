@@ -50,6 +50,7 @@ namespace Foam
 class LoadBalancer : public LoadBalancerBase
 {
 
+
 public:
     struct Operation
     {
@@ -57,7 +58,6 @@ public:
         double value;
     };
 
-public:
     LoadBalancer() = default;
 
     LoadBalancer(const dictionary& dict)
@@ -67,95 +67,52 @@ public:
     {
     }
 
+    // Destructor
     virtual ~LoadBalancer() = default;
 
-    ///
-    ///@brief Given a list of all problems, updates the BalancerState member
-    ///
-    ///@param problems a list of all problems on a rank
-    ///
+    //- Given a list of problems, update the balancer state member
     virtual void updateState(const DynamicList<ChemistryProblem>& problems);
 
-    ///
-    ///@brief Return load balancing status
-    ///
-    ///@return true
-    ///@return false
-    ///
+    //- Is load balancing active?
     bool active() const
     {
         return active_;
     }
 
+
 protected:
-    ///
-    ///@brief Get the operations of this process which minimize the deviation
-    /// from global mean
-    ///
-    ///@param loads Loads on all processes
-    ///@param myLoad Load on this process
-    ///@return std::vector<LoadBalancer::Operation> Operations of this
-    /// rank
-    ///
+
+    //- Get the operations for this rank that would minimize the load to
+    //  global mean
     static std::vector<LoadBalancer::Operation> getOperations(
         DynamicList<ChemistryLoad>& loads, const ChemistryLoad& myLoad);
 
-    ///
-    ///@brief Converts the operations to send and receive info for the base
-    /// class to handle balancing
-    ///
-    ///@param operations Operations of this process
-    ///@param problems Problems of this process
-    ///@param myLoad   Load on this process
-    ///@return BalancerState An object describing how many problems to send/recv
-    /// from different ranks
-    ///
+    //- Conver the operations to send and receive info to handle balancing
     static BalancerState operationsToInfo(
         const std::vector<Operation>&        operations,
         const DynamicList<ChemistryProblem>& problems,
         const ChemistryLoad&                 myLoad);
 
-    ///
-    ///@brief Converts the vector of cpu times to number of problems
-    ///
-    ///@param times Vector of cpu times
-    ///@param problems Problems of this process
-    ///@return std::vector<label>
-    ///
+
+    //- Conver the vector of cpu times to number of problems for the rank
     static std::vector<label> timesToProblemCounts(
         const std::vector<scalar>&           times,
         const DynamicList<ChemistryProblem>& problems);
 
+
 private:
+
     const dictionary dict_;
+
     const dictionary coeffsDict_;
 
     //- Is load balancing active?
     Switch active_;
 
-    ///
-    ///@brief Based on the given operations checks if a process is a sender or
-    /// receiver.
-    ///       Zero operations are marked as a receiver rank.
-    ///
-    ///@param operations Operations to check.
-    ///@param rank       Rank to check.
-    ///@return true      If all operations have a from = rank
-    ///@return false     If operations are null or any of the operations from !=
-    /// rank
-    ///
+    //- Check if the rank is a sender
     static bool isSender(const std::vector<Operation>& operations, int rank);
 
-    ///
-    ///@brief Based on the given operations checks if a process is a sender or
-    /// receiver.
-    ///       Zero operations are marked as a receiver rank.
-    ///
-    ///@param operations Operations to check
-    ///@param rank       Rank to check
-    ///@return true      If all operations have a to = rank
-    ///@return false     Otherwise
-    ///
+    //- Check if the rank is a receiver. Zero operations marked as receiver.
     static bool isReceiver(const std::vector<Operation>& operations, int rank);
 };
 
