@@ -21,29 +21,22 @@ License
 
 #include "LoadBalancer.H"
 
-namespace Foam
-{
-
 void
-LoadBalancer::updateState(
+Foam::LoadBalancer::updateState(
     const DynamicList<ChemistryProblem>& problems)
 {
 
     auto myLoad   = computeLoad(problems);
     auto allLoads = allGather(myLoad);
-
-    // Info << globalMean << endl;
-
     auto operations = getOperations(allLoads, myLoad);
     auto info       = operationsToInfo(operations, problems, myLoad);
 
     setState(info);
 
-    //convertNew();
 }
 
-LoadBalancerBase::BalancerState
-LoadBalancer::operationsToInfo(
+Foam::LoadBalancerBase::BalancerState
+Foam::LoadBalancer::operationsToInfo(
     const std::vector<Operation>&        operations,
     const DynamicList<ChemistryProblem>& problems,
     const ChemistryLoad&                 myLoad)
@@ -83,8 +76,8 @@ LoadBalancer::operationsToInfo(
     return info;
 }
 
-std::vector<label>
-LoadBalancer::timesToProblemCounts(
+std::vector<Foam::label>
+Foam::LoadBalancer::timesToProblemCounts(
     const std::vector<scalar>&           times,
     const DynamicList<ChemistryProblem>& problems)
 {
@@ -110,8 +103,8 @@ LoadBalancer::timesToProblemCounts(
     return counts;
 }
 
-std::vector<LoadBalancer::Operation>
-LoadBalancer::getOperations(
+std::vector<Foam::LoadBalancer::Operation>
+Foam::LoadBalancer::getOperations(
     DynamicList<ChemistryLoad>& loads, const ChemistryLoad& myLoad)
 {
 
@@ -172,7 +165,7 @@ LoadBalancer::getOperations(
 }
 
 bool
-LoadBalancer::isSender(
+Foam::LoadBalancer::isSender(
     const std::vector<Operation>& operations, int rank)
 {
 
@@ -192,7 +185,7 @@ LoadBalancer::isSender(
 }
 
 bool
-LoadBalancer::isReceiver(
+Foam::LoadBalancer::isReceiver(
     const std::vector<Operation>& operations, int rank)
 {
 
@@ -206,4 +199,3 @@ LoadBalancer::isReceiver(
     return true;
 }
 
-} // namespace Foam

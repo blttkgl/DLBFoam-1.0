@@ -21,18 +21,15 @@ License
 
 #include "mixtureFraction.H"
 
-namespace Foam
-{
-
 // Constructor
-mixtureFraction::mixtureFraction(
+Foam::mixtureFraction::mixtureFraction(
     const dictionary& mixFracDict, const wordList& species)
     : mixFracDict_(mixFracDict), species_(species), alpha_(species.size(), 0.0),
       beta_(2, 0.0)
 {
 }
 
-void mixtureFraction::update(const basicSpecieMixture& composition)
+void Foam::mixtureFraction::update(const basicSpecieMixture& composition)
 {
 
     update_alpha(composition);
@@ -42,7 +39,7 @@ void mixtureFraction::update(const basicSpecieMixture& composition)
 }
 
 /// TODO: simplify this and consider if necessary
-void mixtureFraction::print_information(
+void Foam::mixtureFraction::print_information(
     const basicSpecieMixture& composition,
     const List<List<scalar>>& Yconst) const
 {
@@ -83,7 +80,7 @@ void mixtureFraction::print_information(
     Info << "    Stoichiomentric mixture fraction Zst = " << Z_st << endl;
 }
 
-void mixtureFraction::update_alpha(const basicSpecieMixture& composition)
+void Foam::mixtureFraction::update_alpha(const basicSpecieMixture& composition)
 {
 
     forAll(alpha_, i)
@@ -100,7 +97,7 @@ void mixtureFraction::update_alpha(const basicSpecieMixture& composition)
     }
 }
 
-void mixtureFraction::update_beta(
+void Foam::mixtureFraction::update_beta(
     const List<List<scalar>>& Yconst, const List<scalar>& alpha)
 {
 
@@ -126,8 +123,8 @@ void mixtureFraction::update_beta(
     }
 }
 
-List<List<scalar>>
-mixtureFraction::compute_yconst(const basicSpecieMixture& composition) const
+Foam::List<Foam::List<Foam::scalar>>
+Foam::mixtureFraction::compute_yconst(const basicSpecieMixture& composition) const
 {
 
     List<List<scalar>> Yconst(2, List<scalar>(species_.size(), 0.0));
@@ -141,8 +138,8 @@ mixtureFraction::compute_yconst(const basicSpecieMixture& composition) const
     return Yconst;
 }
 
-List<List<scalar>>
-mixtureFraction::compute_a(const basicSpecieMixture& composition) const
+Foam::List<Foam::List<Foam::scalar>>
+Foam::mixtureFraction::compute_a(const basicSpecieMixture& composition) const
 {
 
     List<List<scalar>> a(species_.size(), List<scalar>(3, 0.0));
@@ -160,7 +157,7 @@ mixtureFraction::compute_a(const basicSpecieMixture& composition) const
     return a;
 }
 
-List<scalar> mixtureFraction::compute_Zox(
+Foam::List<Foam::scalar> Foam::mixtureFraction::compute_Zox(
     const List<List<scalar>>& a, const List<List<scalar>>& Yconst) const
 {
 
@@ -177,7 +174,7 @@ List<scalar> mixtureFraction::compute_Zox(
     return Zox;
 }
 
-List<scalar> mixtureFraction::compute_Zfu(
+Foam::List<Foam::scalar> Foam::mixtureFraction::compute_Zfu(
     const List<List<scalar>>& a, const List<List<scalar>>& Yconst) const
 {
 
@@ -192,5 +189,3 @@ List<scalar> mixtureFraction::compute_Zfu(
     }
     return Zfu;
 }
-
-} // namespace Foam

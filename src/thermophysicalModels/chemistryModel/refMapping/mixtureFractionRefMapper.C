@@ -21,10 +21,7 @@ License
 
 #include "mixtureFractionRefMapper.H"
 
-namespace Foam
-{
-
-bool mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& problem)
+bool Foam::mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& problem)
 {
     // Note this assumes that mixture_fraction.update() has been called!
     auto beta_of = mixture_fraction_.get_beta();
@@ -65,9 +62,7 @@ bool mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& problem)
     }
 }
 
-bool mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
+bool Foam::mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
 {
     return check_if_refcell(problem);
 }
-
-} // namespace Foam

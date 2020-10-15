@@ -28,8 +28,3 @@ SourceFiles
 \*---------------------------------------------------------------------------*/
 
 #include "ChemistrySolution.H"
-
-namespace Foam {
-
-
-} // namespace Foam

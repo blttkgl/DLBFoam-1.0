@@ -21,15 +21,12 @@ License
 
 #include "LoadBalancerBase.H"
 
-namespace Foam
-{
-
-bool LoadBalancerBase::active() const
+bool Foam::LoadBalancerBase::active() const
 {
     return true;
 }
 
-void LoadBalancerBase::setState(const BalancerState& state)
+void Foam::LoadBalancerBase::setState(const BalancerState& state)
 {
 
     state_ = state;
@@ -43,8 +40,8 @@ void LoadBalancerBase::setState(const BalancerState& state)
     }
 }
 
-ChemistryLoad
-LoadBalancerBase::computeLoad(const DynamicList<ChemistryProblem>& problems)
+Foam::ChemistryLoad
+Foam::LoadBalancerBase::computeLoad(const DynamicList<ChemistryProblem>& problems)
 {
     auto lambda = [](scalar sum, const ChemistryProblem& rhs) {
         return sum + rhs.cpuTime;
@@ -54,7 +51,7 @@ LoadBalancerBase::computeLoad(const DynamicList<ChemistryProblem>& problems)
     return ChemistryLoad(Pstream::myProcNo(), sum);
 }
 
-scalar LoadBalancerBase::getMean(const DynamicList<ChemistryLoad>& loads)
+Foam::scalar Foam::LoadBalancerBase::getMean(const DynamicList<ChemistryLoad>& loads)
 {
 
     auto op = [](scalar sum, const ChemistryLoad& load) {
@@ -62,7 +59,7 @@ scalar LoadBalancerBase::getMean(const DynamicList<ChemistryLoad>& loads)
     };
     return std::accumulate(loads.begin(), loads.end(), 0.0, op) / loads.size();
 }
-ChemistryLoad LoadBalancerBase::getMin(const DynamicList<ChemistryLoad>& vec)
+Foam::ChemistryLoad Foam::LoadBalancerBase::getMin(const DynamicList<ChemistryLoad>& vec)
 {
 
     auto comp = [](const ChemistryLoad& lhs, const ChemistryLoad& rhs) {
@@ -71,7 +68,7 @@ ChemistryLoad LoadBalancerBase::getMin(const DynamicList<ChemistryLoad>& vec)
     return *std::min_element(vec.begin(), vec.end(), comp);
 }
 
-ChemistryLoad LoadBalancerBase::getMax(const DynamicList<ChemistryLoad>& vec)
+Foam::ChemistryLoad Foam::LoadBalancerBase::getMax(const DynamicList<ChemistryLoad>& vec)
 {
     auto comp = [](const ChemistryLoad& lhs, const ChemistryLoad& rhs) {
         return lhs.value < rhs.value;
@@ -79,7 +76,7 @@ ChemistryLoad LoadBalancerBase::getMax(const DynamicList<ChemistryLoad>& vec)
     return *std::max_element(vec.begin(), vec.end(), comp);
 }
 
-label LoadBalancerBase::rankToLoadIdx(
+Foam::label Foam::LoadBalancerBase::rankToLoadIdx(
     const DynamicList<ChemistryLoad>& loads, label rank) const
 {
 
@@ -92,7 +89,7 @@ label LoadBalancerBase::rankToLoadIdx(
     throw "Could not find my rank from loads.";
 }
 
-bool LoadBalancerBase::validState() const
+bool Foam::LoadBalancerBase::validState() const
 {
 
     /*
@@ -111,7 +108,7 @@ bool LoadBalancerBase::validState() const
     return true;
 }
 
-void LoadBalancerBase::printState() const
+void Foam::LoadBalancerBase::printState() const
 {
 
     // receiver
@@ -138,4 +135,3 @@ void LoadBalancerBase::printState() const
     }
 }
 
-} // namespace Foam

@@ -1,11 +1,6 @@
 #pragma once
 
 #include <iterator>
-
-
-
-
-
 namespace Foam{
 
 
