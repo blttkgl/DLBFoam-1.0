@@ -50,11 +50,11 @@ SourceFiles
 namespace Foam
 {
 
-// Forward declaration of classes
+// Forward  of classes
 class fvMesh;
 
 /*---------------------------------------------------------------------------*\
-                      Class LoadBalancedChemistryModel Declaration
+                    Class LoadBalancedChemistryModel 
 \*---------------------------------------------------------------------------*/
 
 template <class ReactionThermo, class ThermoType>
