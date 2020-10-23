@@ -38,11 +38,14 @@ as well as serialization through the OStream and IStream operators.
 namespace Foam
 {
 
-//- A struct containing rank and load value of each processor
+// A struct containing rank and load value of each processor
 struct ChemistryLoad
 {
-    label  rank;  // rank of the process
-    scalar value; // an indicator how busy the processor is
+    // rank ID of the process
+    label rank; 
+
+    // the load value indicating how busy the processor is
+    scalar value;
 
     ChemistryLoad() = default;
 

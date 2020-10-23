@@ -57,10 +57,10 @@ struct ChemistrySolution
     }
 
     scalarField c_increment; // =   (c_{i+1} - c_{i}) / deltaT;
-    scalar      deltaTChem;
-    scalar      cpuTime;
-    label       cellid;
-    scalar      rhoi;
+    scalar deltaTChem;
+    scalar cpuTime;
+    label cellid;
+    scalar rhoi;
 };
 
 //- Serialization for send

@@ -1,5 +1,15 @@
 #pragma once
 
+
+// This header converts an iterator to a reverse iterator,
+// since the UList::reverse_iterator does not behave like
+// a reverse iterator.
+
+// See bug report on: https://bugs.openfoam.org/view.php?id=3534
+
+// The issue is resolved in OpenFOAM-dev in 
+// commit 17c40d2aa57b1f922cdddc315d8cf3471c9bc600 
+
 #include <iterator>
 namespace Foam
 {

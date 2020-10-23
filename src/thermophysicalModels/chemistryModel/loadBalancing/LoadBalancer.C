@@ -29,13 +29,12 @@ Foam::LoadBalancer::updateState(
     const DynamicList<ChemistryProblem>& problems)
 {
 
-    auto myLoad   = computeLoad(problems);
+    auto myLoad = computeLoad(problems);
     auto allLoads = allGather(myLoad);
     auto operations = getOperations(allLoads, myLoad);
-    auto info       = operationsToInfo(operations, problems, myLoad);
+    auto info = operationsToInfo(operations, problems, myLoad);
 
     setState(info);
-
 }
 
 Foam::LoadBalancerBase::BalancerState
@@ -49,7 +48,7 @@ Foam::LoadBalancer::operationsToInfo(
 
     if(isSender(operations, myLoad.rank))
     {
-        double              sum = 0.0;
+        double sum = 0.0;
         std::vector<double> times;
         for(const auto& op : operations)
         {
@@ -93,7 +92,8 @@ Foam::LoadBalancer::timesToProblemCounts(
     {
 
         scalar sum(0);
-        auto   operation = [&](const ChemistryProblem& problem) {
+        auto operation = [&](const ChemistryProblem& problem) 
+        {
             sum += problem.cpuTime;
             return sum <= time;
         };
@@ -117,7 +117,7 @@ Foam::LoadBalancer::getOperations(
 
     std::sort(loads.begin(), loads.end());
 
-    auto sender   = loads.end() - 1;
+    auto sender = loads.end() - 1;
     auto receiver = loads.begin();
 
     while(sender != receiver)
@@ -125,6 +125,7 @@ Foam::LoadBalancer::getOperations(
 
         double send_value = std::min(
             sender->value - globalMean, globalMean - receiver->value);
+
         Operation operation{sender->rank, receiver->rank, send_value};
         if(sender->rank == myLoad.rank || receiver->rank == myLoad.rank)
         {
@@ -163,8 +164,6 @@ Foam::LoadBalancer::getOperations(
         std::abs(getMean(loads) - globalMean) < 1E-7, "Vanishing load");
 
     return large;
-
-    // return operations;
 }
 
 bool
