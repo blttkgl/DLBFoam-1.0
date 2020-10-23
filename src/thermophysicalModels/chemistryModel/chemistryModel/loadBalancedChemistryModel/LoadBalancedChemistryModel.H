@@ -47,11 +47,8 @@ SourceFiles
 namespace Foam
 {
 
-// Forward declaration of classes
-class fvMesh;
-
 /*---------------------------------------------------------------------------*\
-                    Class LoadBalancedChemistryModel 
+                Class LoadBalancedChemistryModel Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class ReactionThermo, class ThermoType>
@@ -61,15 +58,16 @@ class LoadBalancedChemistryModel
 {
 
 private:
+    // Private member data
+    
+        // Load balancing object
+        LoadBalancer balancer_;
 
-    //- Load balancing object
-    LoadBalancer balancer_;
+        // Reference mapping object
+        mixtureFractionRefMapper mapper_;
 
-    //- Reference mapping object
-    mixtureFractionRefMapper mapper_;
-
-    //- Field containing chemistry CPU time information    
-    volScalarField cpuTimes_;
+        // Field containing chemistry CPU time information    
+        volScalarField cpuTimes_;
 
     // Private Member Functions
 

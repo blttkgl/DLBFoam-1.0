@@ -32,7 +32,8 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::
     LoadBalancedChemistryModel(const ReactionThermo& thermo)
     : 
         StandardChemistryModel<ReactionThermo, ThermoType>(thermo),
-        balancer_(createBalancer()), mapper_(createMapper(this->thermo())),
+        balancer_(createBalancer()), 
+        mapper_(createMapper(this->thermo())),
         cpuTimes_
         (
             IOobject
@@ -44,17 +45,20 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::
                 IOobject::AUTO_WRITE
             ),
             this->mesh(),
-            scalar(0)
+            scalar(0.0)
         )
 {}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
+
 template <class ReactionThermo, class ThermoType>
 Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::
     ~LoadBalancedChemistryModel()
 {}
 
+
+// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template <class ReactionThermo, class ThermoType>
 Foam::mixtureFractionRefMapper
@@ -156,16 +160,17 @@ void Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::solveSingle
     // const scalarList c0       = prob.c;
     scalarField c0 = problem.c;
 
-    // Timer begin
+    // Timer begins
     clockTime time;
     time.timeIncrement();
 
+    // Define a const label to pass as the cell index placeholder
     const label arbitrary = 0;
+
     // Calculate the chemical source terms
     while(timeLeft > small)
     {
         scalar dt = timeLeft;
-        // this->solve(prob.c, prob.Ti, prob.pi, dt, prob.deltaTChem);
         this->solve(
             problem.pi,
             problem.Ti,
@@ -179,7 +184,7 @@ void Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::solveSingle
     solution.c_increment = (problem.c - c0) / problem.deltaT;
     solution.deltaTChem = min(problem.deltaTChem, this->deltaTChemMax_);
 
-    // Timer end
+    // Timer ends
     solution.cpuTime = time.timeIncrement();
 
     solution.cellid = problem.cellid;
@@ -254,6 +259,7 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::solveBuffer
 
     // allocate the solutions buffer
     RecvBuffer<ChemistrySolution> solutions;
+    
     for(auto& p : problems)
     {
         solutions.append(solveList(p));
@@ -310,7 +316,7 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
         if(Ti > this->Treact())
         {
 
-            // Create and populate the chemisty problem
+            // Create and populate the chemisty problem for celli
             ChemistryProblem problem;
             problem.c = this->c_;
             problem.Ti = T[celli];
