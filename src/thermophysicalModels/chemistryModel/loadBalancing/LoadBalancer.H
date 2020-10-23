@@ -20,11 +20,14 @@ License
     for more details.
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
 Class
     Foam::LoadBalancer
+
 Description
     Extends the base class LoadBalancerBase by implementing a
     balancing algorithm which tries to set the global mean load to each rank.
+    
 SourceFiles
     LoadBalancer.C
 \*---------------------------------------------------------------------------*/

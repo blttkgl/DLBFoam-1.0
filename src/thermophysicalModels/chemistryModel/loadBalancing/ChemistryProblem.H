@@ -20,8 +20,10 @@ License
     for more details.
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
 Class
     Foam::ChemistryProblem
+    
 Description
     A small object containing everything required for solving the reaction rate
     using the ODE solver. These are passed around in the load balancer.

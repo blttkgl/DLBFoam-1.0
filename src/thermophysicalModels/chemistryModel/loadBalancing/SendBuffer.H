@@ -10,7 +10,6 @@ License
 
     https://github.com/blttkgl/OpenFOAM-Aalto
 
-
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -29,7 +28,7 @@ Class
 
 Description
     Wrapper around Foam::DynamicList which is used to slice subsets to avoid
-unnecessary copies when sending data.
+    unnecessary copies when sending data.
 
 \*---------------------------------------------------------------------------*/
 
