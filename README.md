@@ -17,10 +17,8 @@ details can be found in [[1]](#1).
 <p align="center">
     <img src="third_party/rankbased_solve.png" alt="drawing" width="600"/>
 </p>
-<p align="center">
-    <figcaption>Figure: A demonstration of how load balancing model works compared to standard model.</figcaption>
-</p>
 
+<figcaption style="text-align:center">Figure: A demonstration of how load balancing model works compared to standard model.</figcaption>
 
 ## Compilation
 
