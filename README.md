@@ -15,10 +15,8 @@ details can be found in [[1]](#1).
 
 
 <p align="center">
-  <figure>
     <img src="third_party/rankbased_solve.png" alt="drawing" width="600"/>
     <figcaption>Figure: A demonstration of how load balancing model works compared to standard model.</figcaption>
- </figure>
 </p>
 
 
