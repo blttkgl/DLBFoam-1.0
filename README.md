@@ -14,8 +14,9 @@ to minimize the load imbalance between ranks and gain speed-up. The implementati
 details can be found in [[1]](#1).
 
 
-
-<img src="third_party/rankbased_solve.png" alt="drawing" width="600"/>
+<p align="center">
+  <img src="third_party/rankbased_solve.png" alt="drawing" width="600"/>
+</p>
 
 
 ## Compilation
