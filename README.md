@@ -13,7 +13,11 @@ LoadBalancedChemistryModel introduces runtime load balancing through MPI routine
 to minimize the load imbalance between ranks and gain speed-up. The implementation
 details can be found in [[1]](#1).
 
+
+
+
 ![Alt text](third_party/rankbased_solve.png?raw=true "Title")
+
 
 ## Compilation
 
