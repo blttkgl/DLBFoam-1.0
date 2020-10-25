@@ -15,8 +15,7 @@ details can be found in [[1]](#1).
 
 
 
-
-![Alt text](third_party/rankbased_solve.png?raw=true "Title")
+<img src="third_party/rankbased_solve.png" alt="drawing" width="200"/>
 
 
 ## Compilation
