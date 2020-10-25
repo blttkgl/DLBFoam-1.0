@@ -15,7 +15,7 @@ details can be found in [[1]](#1).
 
 
 
-<img src="third_party/rankbased_solve.png" alt="drawing" width="200"/>
+<img src="third_party/rankbased_solve.png" alt="drawing" width="600"/>
 
 
 ## Compilation
