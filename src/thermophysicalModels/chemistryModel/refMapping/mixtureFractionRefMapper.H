@@ -92,6 +92,9 @@ public:
         // TODO: move to the mixture fraction constructor and dont call anything
         // here
         mixture_fraction_.update(composition);
+        auto beta_of = mixture_fraction_.get_beta();
+        auto alpha   = mixture_fraction_.get_alpha();
+
     }
 
     bool shouldMap(const ChemistryProblem& problem);

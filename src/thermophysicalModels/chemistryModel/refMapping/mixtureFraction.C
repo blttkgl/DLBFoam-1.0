@@ -39,49 +39,6 @@ void Foam::mixtureFraction::update(const basicSpecieMixture& composition)
     update_alpha(composition);
     auto Yconst = compute_yconst(composition);
     update_beta(Yconst, alpha_);
-    print_information(composition, Yconst);
-}
-
-/// TODO: simplify this and consider if necessary
-void Foam::mixtureFraction::print_information(
-    const basicSpecieMixture& composition,
-    const List<List<scalar>>& Yconst) const
-{
-
-    auto a   = compute_a(composition);
-    auto Zox = compute_Zox(a, Yconst);
-    auto Zfu = compute_Zfu(a, Yconst);
-
-    //- stoichiometric mixture fraction
-    scalar Z_st = (0.0 - beta_[0]) / (beta_[1] - beta_[0]);
-
-    // Print out some information
-    Info << "    Oxidizer:" << nl << "    speciesMassFractions:" << nl;
-    forAll(species_, i)
-    {
-        if(Yconst[0][i] != 0.0)
-        {
-            Info << "        Y(" << species_[i] << ") = " << Yconst[0][i] << nl;
-        }
-    }
-    Info << "    elementMassFractions:" << nl << "        Z(C) = " << Zox[0]
-         << nl << "        Z(H) = " << Zox[1] << nl
-         << "        Z(O) = " << Zox[2] << nl << endl;
-
-    Info << "    Fuel:" << nl << "    speciesMassFractions:" << nl;
-    forAll(species_, i)
-    {
-        if(Yconst[1][i] != 0.0)
-        {
-            Info << "        Y(" << species_[i] << ") = " << Yconst[1][i] << nl;
-        }
-    }
-    Info << "    elementMassFractions:" << nl << "        Z(C) = " << Zfu[0]
-         << nl << "        Z(H) = " << Zfu[1] << nl
-         << "        Z(O) = " << Zfu[2] << nl << endl;
-
-    // Stoichiometric mixture fraction
-    Info << "    Stoichiomentric mixture fraction Zst = " << Z_st << endl;
 }
 
 void Foam::mixtureFraction::update_alpha(const basicSpecieMixture& composition)
@@ -140,56 +97,4 @@ Foam::mixtureFraction::compute_yconst(const basicSpecieMixture& composition) con
                            .lookupOrDefault<scalar>(species_[i], 0.0);
     }
     return Yconst;
-}
-
-Foam::List<Foam::List<Foam::scalar>>
-Foam::mixtureFraction::compute_a(const basicSpecieMixture& composition) const
-{
-
-    List<List<scalar>> a(species_.size(), List<scalar>(3, 0.0));
-    forAll(species_, i)
-    {
-        const dictionary& dict =
-            mixFracDict_.subDict(species_[i]).subDict("elements");
-        a[i][0] = dict.lookupOrDefault<label>("C", 0) * atomicWeights["C"] /
-                  composition.Wi(i);
-        a[i][1] = dict.lookupOrDefault<label>("H", 0) * atomicWeights["H"] /
-                  composition.Wi(i);
-        a[i][2] = dict.lookupOrDefault<label>("O", 0) * atomicWeights["O"] /
-                  composition.Wi(i);
-    }
-    return a;
-}
-
-Foam::List<Foam::scalar> Foam::mixtureFraction::compute_Zox(
-    const List<List<scalar>>& a, const List<List<scalar>>& Yconst) const
-{
-
-    // Compute element mass fractions (only for printing)
-    List<scalar> Zox(species_.size(), 0.0);
-
-    forAll(Zox, j)
-    {
-        forAll(species_, i)
-        {
-            Zox[j] += a[i][j] * Yconst[0][i];
-        }
-    }
-    return Zox;
-}
-
-Foam::List<Foam::scalar> Foam::mixtureFraction::compute_Zfu(
-    const List<List<scalar>>& a, const List<List<scalar>>& Yconst) const
-{
-
-    List<scalar> Zfu(species_.size(), 0.0);
-
-    forAll(Zfu, j)
-    {
-        forAll(species_, i)
-        {
-            Zfu[j] += a[i][j] * Yconst[1][i];
-        }
-    }
-    return Zfu;
 }

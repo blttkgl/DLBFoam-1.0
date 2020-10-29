@@ -118,16 +118,6 @@ public:
     ///
     void update(const basicSpecieMixture& composition);
 
-    ///
-    ///@brief Prints information on related to mixture fraction.
-    ///
-    ///@param composition
-    ///@param Yconst
-    ///
-    void print_information(
-        const basicSpecieMixture& composition,
-        const List<List<scalar>>& Yconst) const;
-
 private:
     dictionary   mixFracDict_;
     wordList     species_;
@@ -158,34 +148,6 @@ private:
     ///
     List<List<scalar>>
     compute_yconst(const basicSpecieMixture& composition) const;
-
-    ///
-    ///@brief Updates a_{k,i} for every specie in the system.
-    ///
-    ///@param composition
-    ///@return List<List<scalar>>
-    ///
-    List<List<scalar>> compute_a(const basicSpecieMixture& composition) const;
-
-    ///
-    ///@brief Computes the normalized mixture fraction at oxidizer port.
-    ///
-    ///@param a
-    ///@param Yconst
-    ///@return List<scalar>
-    ///
-    List<scalar> compute_Zox(
-        const List<List<scalar>>& a, const List<List<scalar>>& Yconst) const;
-
-    ///
-    ///@brief Computes the normalized mixture fraction at fuel port.
-    ///
-    ///@param a
-    ///@param Yconst
-    ///@return List<scalar>
-    ///
-    List<scalar> compute_Zfu(
-        const List<List<scalar>>& a, const List<List<scalar>>& Yconst) const;
 };
 
 } // namespace Foam
