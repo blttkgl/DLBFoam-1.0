@@ -48,6 +48,19 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::
             ),
             this->mesh(),
             scalar(0.0)
+        ),
+        refMap_
+        (
+            IOobject
+            (
+                thermo.phasePropertyName("referenceMap"),
+                this->time().timeName(),
+                this->mesh(),
+                IOobject::NO_READ,
+                IOobject::AUTO_WRITE
+            ),
+            this->mesh(),
+            scalar(0.0)
         )
 {}
 
@@ -339,16 +352,19 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
                     updateReactionRate(ref_solution, ref_solution.cellid);
                     refCellFound = true;
                     cpuTimes_[ref_solution.cellid] = ref_solution.cpuTime;
+                    refMap_[ref_solution.cellid] = 0;
                 }
                 else
                 {
                     updateReactionRate(ref_solution, celli);
                     cpuTimes_[celli] = ref_solution.cpuTime;
+                    refMap_[celli] = 1;
                 }
             }
             else
             {
                 chem_problems.append(problem);
+                refMap_[celli] = 2;
             }
         }
         else

@@ -71,6 +71,13 @@ private:
         // Field containing chemistry CPU time information    
         volScalarField cpuTimes_;
 
+        // Field containing reference mapping information   
+        // 0 -> reference solution
+        // 1 -> mapped from reference solution
+        // 2 -> solved explicitly
+        volScalarField refMap_;
+
+
     // Private Member Functions
 
         //- Create a reference mapper object
