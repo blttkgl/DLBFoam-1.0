@@ -70,3 +70,22 @@ bool Foam::mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
 {
     return check_if_refcell(problem);
 }
+
+
+Foam::ChemistryProblem Foam::mixtureFractionRefMapper::getGlobalRef(const ChemistryProblem& problem)
+{
+    DynamicList<ChemistryProblem> refMapList(Pstream::nProcs(),problem);
+    refMapList[Pstream::myProcNo()] = problem;
+
+    // Broadcast the list of problems to all the ranks
+    label tag = 1;
+    Pstream::gatherList(refMapList,tag);
+    Pstream::scatterList(refMapList,tag);
+
+    // For now return the first problem from the list
+    // but here some condition will apply to pick the
+    // global reference problem based on f(T,p,Y)
+
+    return refMapList[0];    
+
+}

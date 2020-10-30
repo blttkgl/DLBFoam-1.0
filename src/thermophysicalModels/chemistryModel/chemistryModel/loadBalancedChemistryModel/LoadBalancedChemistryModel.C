@@ -342,17 +342,14 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
             problem.cpuTime = cpuTimes_[celli];
             problem.cellid = celli;
 
-            // First reference cell is found and solved, following reference
-            // cells are mapped from the first reference cell found
             if(mapper_.active() && mapper_.shouldMap(getMassFraction(problem)))
             {
                 if(!refCellFound)
                 {
-                    solveSingle(problem, ref_solution);
-                    updateReactionRate(ref_solution, ref_solution.cellid);
+                    // refCell is found
                     refCellFound = true;
-                    cpuTimes_[ref_solution.cellid] = ref_solution.cpuTime;
-                    refMap_[ref_solution.cellid] = 0;
+                    ChemistryProblem ref_problem = mapper_.getGlobalRef(problem);
+                    solveSingle(ref_problem, ref_solution); // Now I have a reference solution
                 }
                 else
                 {

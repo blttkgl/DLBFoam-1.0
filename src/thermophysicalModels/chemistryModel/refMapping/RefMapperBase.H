@@ -64,6 +64,8 @@ public:
 
     virtual bool shouldMap(const ChemistryProblem& problem) = 0;
 
+    virtual ChemistryProblem getGlobalRef(const ChemistryProblem& problem) = 0;
+
     virtual bool active() const = 0;
 
     //- Destructor

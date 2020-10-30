@@ -99,6 +99,8 @@ public:
 
     bool shouldMap(const ChemistryProblem& problem);
 
+    ChemistryProblem getGlobalRef(const ChemistryProblem& problem);
+
     bool active() const
     {
         return active_;
