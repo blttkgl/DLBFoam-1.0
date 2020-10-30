@@ -317,6 +317,7 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
     const scalarField& rho = trho();
     bool refCellFound = false;
     DynamicList<ChemistryProblem> chem_problems;
+    ChemistryProblem ref_problem;
     ChemistrySolution ref_solution(this->nSpecie_);
 
     forAll(p, celli)
@@ -348,8 +349,13 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
                 {
                     // refCell is found
                     refCellFound = true;
-                    ChemistryProblem ref_problem = mapper_.getGlobalRef(problem);
+                    ref_problem = mapper_.getGlobalRef(problem);
                     solveSingle(ref_problem, ref_solution); // Now I have a reference solution
+                    updateReactionRate(ref_solution, celli); // This refcell can also be updated at this point
+
+                    // refMap_ field is not update because we do not know which rank this ref problem is coming
+                    // from, so its ref_solution.cellid is just garbage!
+                    //refMap_[celli] = 0;  
                 }
                 else
                 {
