@@ -60,6 +60,7 @@ See also
 #include "Switch.H"
 #include "runTimeSelectionTables.H"
 #include "scalarField.H"
+#include "LoadBalancerBase.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -106,6 +107,11 @@ public:
         return active_;
     }
 
+    void clear()
+    {
+        refCellFound_ = false;
+    }
+
 protected:
     // None
 
@@ -131,9 +137,13 @@ private:
     bool   refCellFound_;
     scalar Tref_;
 
+    //- Global reference cell problem
+    ChemistryProblem globalReference;
+
     mixtureFraction mixture_fraction_;
 
     bool check_if_refcell(const ChemistryProblem& mass_fraction);
+
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -319,7 +319,10 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
     DynamicList<ChemistryProblem> chem_problems;
     ChemistryProblem ref_problem;
     ChemistrySolution ref_solution(this->nSpecie_);
-
+    
+    // Clear the mapper for the next call
+    mapper_.clear();
+  
     forAll(p, celli)
     {
         for(label i = 0; i < this->nSpecie_; i++)
@@ -378,6 +381,16 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
             }
         }
     }
+
+    // If no refCell is found, pass a dummy problem
+    if(mapper_.active() && !refCellFound)
+    {
+        ChemistryProblem dummyProblem;
+        mapper_.getGlobalRef(dummyProblem);
+    }
+
+
+
     return chem_problems;
 }
 

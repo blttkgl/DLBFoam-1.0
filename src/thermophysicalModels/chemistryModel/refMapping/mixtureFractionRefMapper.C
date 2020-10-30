@@ -27,11 +27,11 @@ License
 
 bool Foam::mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& problem)
 {
-    // Note this assumes that mixture_fraction.update() has been called!
+    // TODO: These two lines should be called ONCE 
     auto beta_of = mixture_fraction_.get_beta();
     auto alpha   = mixture_fraction_.get_alpha();
 
-    scalar beta = 0.0; // TODO: rename!
+    scalar beta = 0.0;
     forAll(problem.c, iField)
     {
         beta += alpha[iField] * problem.c[iField];
@@ -39,31 +39,21 @@ bool Foam::mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& pr
 
     scalar Z = (beta - beta_of[0]) / (beta_of[1] - beta_of[0]);
 
-    if(!refCellFound_)
+
+    if(refCellFound_ && Z < tolerance_ && abs(problem.Ti-globalReference.Ti) < temperature_tolerance_ )
     {
-        if(Z > tolerance_)
-        {
-            return false;
-        }
-        else
-        {
-            Tref_         = problem.Ti;
-            refCellFound_ = true;
-            return true;
-        }
+        return true;
+    }
+    else if(!refCellFound_ && Z < tolerance_)
+    {
+        return true;
     }
     else
     {
-        if((Z > tolerance_) ||
-           (abs(problem.Ti - Tref_) > temperature_tolerance_ && temp_active_))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return false;
     }
+    
+
 }
 
 bool Foam::mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
@@ -74,18 +64,16 @@ bool Foam::mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
 
 Foam::ChemistryProblem Foam::mixtureFractionRefMapper::getGlobalRef(const ChemistryProblem& problem)
 {
-    DynamicList<ChemistryProblem> refMapList(Pstream::nProcs(),problem);
-    refMapList[Pstream::myProcNo()] = problem;
+    auto refMapList = LoadBalancerBase::allGather(problem);
 
-    // Broadcast the list of problems to all the ranks
-    label tag = 1;
-    Pstream::gatherList(refMapList,tag);
-    Pstream::scatterList(refMapList,tag);
+    // Return the cell with the maximum temperature as the globalRef
+    auto filter = [](const ChemistryProblem& lhs, const ChemistryProblem& rhs){
+        return lhs.Ti < rhs.Ti;};
 
-    // For now return the first problem from the list
-    // but here some condition will apply to pick the
-    // global reference problem based on f(T,p,Y)
+    globalReference = *std::max_element(refMapList.begin(), refMapList.end(), filter);
+    refCellFound_ = true;
 
-    return refMapList[0];    
+    return(globalReference);
+}    
 
-}
+
