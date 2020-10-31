@@ -318,7 +318,7 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
     bool refCellFound = false;
     DynamicList<ChemistryProblem> chem_problems;
     ChemistrySolution ref_solution(this->nSpecie_);
-
+    mapper_.clear();
     forAll(p, celli)
     {
         for(label i = 0; i < this->nSpecie_; i++)
@@ -349,17 +349,17 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
                 if(!refCellFound)
                 {
                     solveSingle(problem, ref_solution);
-                    updateReactionRate(ref_solution, ref_solution.cellid);
                     refCellFound = true;
-                    cpuTimes_[ref_solution.cellid] = ref_solution.cpuTime;
-                    refMap_[ref_solution.cellid] = 0;
+                    refMap_[celli] = 0;
                 }
                 else
                 {
                     updateReactionRate(ref_solution, celli);
-                    cpuTimes_[celli] = ref_solution.cpuTime;
                     refMap_[celli] = 1;
                 }
+                cpuTimes_[celli] = ref_solution.cpuTime;
+                updateReactionRate(ref_solution, celli);
+
             }
             else
             {
