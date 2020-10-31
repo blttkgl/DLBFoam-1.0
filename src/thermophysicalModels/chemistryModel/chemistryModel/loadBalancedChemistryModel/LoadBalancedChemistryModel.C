@@ -385,8 +385,15 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
     // If no refCell is found, pass a dummy problem
     if(mapper_.active() && !refCellFound)
     {
-        ChemistryProblem dummyProblem;
-        mapper_.getGlobalRef(dummyProblem);
+           ChemistryProblem problem;
+            problem.c = this->c_;
+            problem.Ti = 0.0;
+            problem.pi = 0.0;
+            problem.rhoi = 0.0;
+            problem.deltaTChem = 0.0;
+
+
+        mapper_.getGlobalRef(problem);
     }
 
 
