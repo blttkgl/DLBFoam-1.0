@@ -319,6 +319,7 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
     DynamicList<ChemistryProblem> chem_problems;
     ChemistrySolution ref_solution(this->nSpecie_);
     mapper_.clear();
+    
     forAll(p, celli)
     {
         for(label i = 0; i < this->nSpecie_; i++)
@@ -330,7 +331,6 @@ Foam::LoadBalancedChemistryModel<ReactionThermo, ThermoType>::getProblems
 
         if(Ti > this->Treact())
         {
-
             // Create and populate the chemisty problem for celli
             ChemistryProblem problem;
             problem.c = this->c_;
