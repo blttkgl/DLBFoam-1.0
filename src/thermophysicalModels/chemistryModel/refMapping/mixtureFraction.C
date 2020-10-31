@@ -33,17 +33,8 @@ Foam::mixtureFraction::mixtureFraction(
 {
 }
 
-void Foam::mixtureFraction::update(const basicSpecieMixture& composition)
+void Foam::mixtureFraction::initialize(const basicSpecieMixture& composition)
 {
-
-    update_alpha(composition);
-    auto Yconst = compute_yconst(composition);
-    update_beta(Yconst, alpha_);
-}
-
-void Foam::mixtureFraction::update_alpha(const basicSpecieMixture& composition)
-{
-
     forAll(alpha_, i)
     {
         const dictionary& dict =
@@ -56,11 +47,15 @@ void Foam::mixtureFraction::update_alpha(const basicSpecieMixture& composition)
             -1.0 * dict.lookupOrDefault<label>("O", 0) / composition.Wi(i));
         alpha_[i] = a0 + a1 + a2;
     }
-}
 
-void Foam::mixtureFraction::update_beta(
-    const List<List<scalar>>& Yconst, const List<scalar>& alpha)
-{
+    List<List<scalar>> Yconst(2, List<scalar>(species_.size(), 0.0));
+    forAll(species_, i)
+    {
+        Yconst[0][i] = mixFracDict_.subDict("oxidizerMassFractions")
+                           .lookupOrDefault<scalar>(species_[i], 0.0);
+        Yconst[1][i] = mixFracDict_.subDict("fuelMassFractions")
+                           .lookupOrDefault<scalar>(species_[i], 0.0);
+    }
 
     scalar YoxTot = 0.0;
     scalar YfuTot = 0.0;
@@ -79,22 +74,27 @@ void Foam::mixtureFraction::update_beta(
 
     forAll(species_, i)
     {
-        beta_[0] += alpha[i] * Yconst[0][i]; // oxidizer
-        beta_[1] += alpha[i] * Yconst[1][i]; // fuel
+        beta_[0] += alpha_[i] * Yconst[0][i]; // oxidizer
+        beta_[1] += alpha_[i] * Yconst[1][i]; // fuel
     }
+
+
+    // Stoichiometric mixture fraction
+    scalar Z_st =  (0.0 - beta_[0])/(beta_[1] - beta_[0]);
+
+    Info<<"Stoichiomentric mixture fraction Zst = " << Z_st << endl;
+
 }
 
-Foam::List<Foam::List<Foam::scalar>>
-Foam::mixtureFraction::compute_yconst(const basicSpecieMixture& composition) const
-{
 
-    List<List<scalar>> Yconst(2, List<scalar>(species_.size(), 0.0));
-    forAll(species_, i)
+Foam::scalar Foam::mixtureFraction::getZ(const ChemistryProblem& problem)
+{
+    
+    scalar beta = 0.0; 
+    forAll(problem.c, iField)
     {
-        Yconst[0][i] = mixFracDict_.subDict("oxidizerMassFractions")
-                           .lookupOrDefault<scalar>(species_[i], 0.0);
-        Yconst[1][i] = mixFracDict_.subDict("fuelMassFractions")
-                           .lookupOrDefault<scalar>(species_[i], 0.0);
+        beta += alpha_[iField] * problem.c[iField];
     }
-    return Yconst;
+
+    return (beta - beta_[0]) / (beta_[1] - beta_[0]);
 }

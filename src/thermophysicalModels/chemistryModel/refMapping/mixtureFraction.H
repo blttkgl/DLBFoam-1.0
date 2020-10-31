@@ -85,6 +85,7 @@ SourceFiles
 #include "Switch.H"
 #include "runTimeSelectionTables.H"
 #include "scalarField.H"
+#include "ChemistryProblem.H"
 
 // Mixture fraction headers
 #include "atomicWeights.H"
@@ -100,54 +101,22 @@ public:
     mixtureFraction() = default;
 
     mixtureFraction(const dictionary& mixFracDict, const wordList& species);
+   
+    //- Initialize the alpha and beta values needed for 
+    // mixture fraction calculation
+    void initialize(const basicSpecieMixture& composition);
 
-    const List<scalar>& get_alpha() const
-    {
-        return alpha_;
-    }
-    const List<scalar>& get_beta() const
-    {
-        return beta_;
-    }
+    //- Calculate mixture fraction of the given problem
+    scalar getZ(const ChemistryProblem& problem);
 
-    ///
-    ///@brief Updates the alpha and beta parameters based on the input
-    /// composition
-    ///
-    ///@param composition
-    ///
-    void update(const basicSpecieMixture& composition);
 
 private:
+
     dictionary   mixFracDict_;
     wordList     species_;
     List<scalar> alpha_;
     List<scalar> beta_;
-
-    ///
-    ///@brief updates alpha used in mixture fraction calculation.
-    ///
-    ///@param composition
-    ///
-    void update_alpha(const basicSpecieMixture& composition);
-
-    ///
-    ///@brief updates beta used in mixture fraction calculation.
-    ///
-    ///@param Yconst
-    ///@param alpha
-    ///
-    void
-    update_beta(const List<List<scalar>>& Yconst, const List<scalar>& alpha);
-
-    ///
-    ///@brief Sets the pure fuel and pure oxidizer stream conditions.
-    ///
-    ///@param composition
-    ///@return List<List<scalar>>
-    ///
-    List<List<scalar>>
-    compute_yconst(const basicSpecieMixture& composition) const;
+    
 };
 
 } // namespace Foam

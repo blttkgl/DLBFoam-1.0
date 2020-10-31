@@ -24,7 +24,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::RefMapperBased
+    Foam::RefMapperBase
 
 Description
     An abstract class for all reference mapping methods.

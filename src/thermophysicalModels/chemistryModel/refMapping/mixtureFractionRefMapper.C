@@ -25,19 +25,9 @@ License
 
 #include "mixtureFractionRefMapper.H"
 
-bool Foam::mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& problem)
+bool Foam::mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
 {
-    // Note this assumes that mixture_fraction.update() has been called!
-    auto beta_of = mixture_fraction_.get_beta();
-    auto alpha   = mixture_fraction_.get_alpha();
-
-    scalar beta = 0.0; // TODO: rename!
-    forAll(problem.c, iField)
-    {
-        beta += alpha[iField] * problem.c[iField];
-    }
-
-    scalar Z = (beta - beta_of[0]) / (beta_of[1] - beta_of[0]);
+    Z = mixture_fraction_.getZ(problem);
 
     if(!refCellFound_)
     {
@@ -54,8 +44,7 @@ bool Foam::mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& pr
     }
     else
     {
-        if((Z > tolerance_) ||
-           (abs(problem.Ti - Tref_) > temperature_tolerance_ && temp_active_))
+        if((Z > tolerance_) || (abs(problem.Ti - Tref_) > deltaT_))
         {
             return false;
         }
@@ -64,9 +53,4 @@ bool Foam::mixtureFractionRefMapper::check_if_refcell(const ChemistryProblem& pr
             return true;
         }
     }
-}
-
-bool Foam::mixtureFractionRefMapper::shouldMap(const ChemistryProblem& problem)
-{
-    return check_if_refcell(problem);
 }

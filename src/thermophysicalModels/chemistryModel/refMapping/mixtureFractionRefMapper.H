@@ -79,59 +79,56 @@ public:
         : RefMapperBase(), dict_(dict), coeffsDict_(dict.subDict("refmapping")),
           active_(coeffsDict_.lookupOrDefault<Switch>("active", false)),
           tolerance_(coeffsDict_.lookupOrDefault<scalar>("tolerance", 1e-4)),
-          temperatureDict_(coeffsDict_.subDict("temperatureChecker")),
-          temp_active_(
-              temperatureDict_.lookupOrDefault<Switch>("active", false)),
-          temperature_tolerance_(
-              temperatureDict_.lookupOrDefault<scalar>("tolerance", 0.1)),
+          deltaT_(coeffsDict_.lookupOrDefault<scalar>("deltaT", VGREAT)),
           refCellFound_(false), Tref_(0.0),
           mixture_fraction_(
               coeffsDict_.subDict("mixtureFractionProperties"),
               composition.species())
     {
-        // TODO: move to the mixture fraction constructor and dont call anything
-        // here
-        mixture_fraction_.update(composition);
-        auto beta_of = mixture_fraction_.get_beta();
-        auto alpha   = mixture_fraction_.get_alpha();
-
+        mixture_fraction_.initialize(composition);
     }
 
+    //- Check if the cell is a mapping candidate
     bool shouldMap(const ChemistryProblem& problem);
 
+    //- Is reference mapping active?
     bool active() const
     {
         return active_;
     }
 
-protected:
-    // None
+    //- Re-initialize the refCellFound_ for 
+    // next iteration
+    void clear()
+    {
+        refCellFound_ = false;
+    }
+
 
 private:
-    // TODO: for runtime switching, these need to be references
     const dictionary dict_;
     const dictionary coeffsDict_;
 
-    //- Is reference mapping active?
+    // Is reference mapping active?
     Switch active_;
 
-    //- Tolerance for reference mapping
-    scalar           tolerance_;
+    // Tolerance for reference mapping
+    scalar tolerance_;
 
-    const dictionary temperatureDict_;
-
-    //- Is temperature checking active?
-    Switch temp_active_;
-
-    //- Tolerance for temperature checking (in Kelvins)
-    scalar temperature_tolerance_;
-
+    // Tolerance for temperature checking (in Kelvins)
+    scalar deltaT_;
+    
+    // Is first ref cell found?
     bool   refCellFound_;
+
+    // Reference temperature to be checked
     scalar Tref_;
 
-    mixtureFraction mixture_fraction_;
+    // Mixture fraction value
+    scalar Z;
 
-    bool check_if_refcell(const ChemistryProblem& mass_fraction);
+    // Mixture fraction object
+    mixtureFraction mixture_fraction_;
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
