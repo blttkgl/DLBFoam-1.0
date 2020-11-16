@@ -19,12 +19,14 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 \*---------------------------------------------------------------------------*/
 
+
 #ifndef makeDLBChemistrySolverTypes_H
 #define makeDLBChemistrySolverTypes_H
 
 #include "chemistrySolver.H"
 
 #include "LoadBalancedChemistryModel.H"
+#include "TDACChemistryModel.H"
 
 #include "noChemistrySolver.H"
 #include "EulerImplicit.H"
@@ -47,7 +49,7 @@ License
     BasicChemistryModel<Comp>::                                                \
         add##thermo##ConstructorToTable<SS##Comp##Thermo>                      \
         add##SS##Comp##Thermo##thermo##ConstructorTo##BasicChemistryModel##Comp\
-##Table_;
+##Table_; \
 
 
 #define makeChemistrySolverTypes(Comp, Thermo)                                 \

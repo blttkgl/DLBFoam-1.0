@@ -11,6 +11,7 @@ EXE_INC = \
     -DNDEBUG
 
 LIB_LIBS = \
+    -lcompressibleTransportModels \
     -lfluidThermophysicalModels \
     -lreactionThermophysicalModels \
     -lspecie \
