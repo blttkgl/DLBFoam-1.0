@@ -16,7 +16,7 @@ FoamFile
 
 NCORES          8;
 
-numberOfSubdomains 8;
+numberOfSubdomains $NCORES;
 
 method          scotch;
 
