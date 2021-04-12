@@ -136,7 +136,7 @@ For a working example, check the tutorials given in tutorials folder.
 ```
 
 ## Contributors
-- Bulut Tekgul (bulut.tekgul@aalto.fi)
+- Bulut Tekgül (bulut.tekgul@aalto.fi)
 - Petteri Peltonen (petteri.peltonen@aalto.fi)
 - Heikki Kahila (heikki.kahila@wartsila.com)
 
