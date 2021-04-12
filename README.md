@@ -134,10 +134,17 @@ For a working example, check the tutorials given in tutorials folder.
 ├── tutorials                                      // Tutorials
 └── unittests                                      // Unit tests to check if compilation is successful
 ```
+
+## Contributors
+- Bulut Tekgul (bulut.tekgul@aalto.fi)
+- Petteri Peltonen (petteri.peltonen@aalto.fi)
+- Heikki Kahila (heikki.kahila@wartsila.com)
+
+
 ## Getting help and reporting bugs
 
 Please submit a GitHub issue if you found a bug in the program. If you need help with the software or have further questions,
-contact bulut.tekgul@aalto.fi.
+contact the contributors.
 
 ## Citation
 
