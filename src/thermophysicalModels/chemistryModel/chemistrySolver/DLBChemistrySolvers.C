@@ -34,10 +34,6 @@ License
 #include "forPolynomials.H"
 #include "DLBmakeChemistrySolver.H"
 
-//odes
-#include "EulerImplicit.H"
-#include "noChemistrySolver.H"
-#include "ode.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,37 +45,6 @@ namespace Foam
     forCommonLiquids(defineChemistrySolvers, rhoReactionThermo);
 
     forPolynomials(defineChemistrySolvers, rhoReactionThermo);
-
-    /*
-    //Euler implicit
-    forCommonGases(makeChemistrySolvers, EulerImplicit, psiReactionThermo);
-    forCommonGases(makeChemistrySolvers, EulerImplicit, rhoReactionThermo);
-
-    forCommonLiquids(makeChemistrySolvers, EulerImplicit, rhoReactionThermo);
-
-    forPolynomials(makeChemistrySolvers, EulerImplicit, rhoReactionThermo);
-    
-    //No chemistry solver
-    forCommonGases(makeChemistrySolvers, noChemistrySolver, psiReactionThermo);
-    forCommonGases(makeChemistrySolvers, noChemistrySolver, rhoReactionThermo);
-
-    forCommonLiquids
-    (
-        makeChemistrySolvers,
-        noChemistrySolver,
-        rhoReactionThermo
-    );
-
-    forPolynomials(makeChemistrySolvers, noChemistrySolver, rhoReactionThermo);
-
-    //ode
-    forCommonGases(makeChemistrySolvers, ode, psiReactionThermo);
-    forCommonGases(makeChemistrySolvers, ode, rhoReactionThermo);
-
-    forCommonLiquids(makeChemistrySolvers, ode, rhoReactionThermo);
-
-    forPolynomials(makeChemistrySolvers, ode, rhoReactionThermo);
-    */
 
 
 
